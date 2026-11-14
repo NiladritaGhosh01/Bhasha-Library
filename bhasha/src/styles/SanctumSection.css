@@ -1,0 +1,336 @@
+/* Admission Sanctum: Clean Literary Workspace (No Yellow Slop) */
+
+.sanctum-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 4.5rem 1.5rem 5rem;
+}
+
+.sanctum-container {
+  max-width: 42rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header */
+.sanctum-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sanctum-category-label {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.sanctum-title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  margin: 0.25rem 0;
+}
+
+@media (min-width: 640px) {
+  .sanctum-title { font-size: 2.75rem; }
+}
+
+.sanctum-subtitle-bengali {
+  font-family: var(--font-bengali);
+  font-size: 1.0625rem;
+  color: var(--color-on-surface-muted);
+  margin-top: 0.25rem;
+}
+
+/* Card */
+.sanctum-card {
+  position: relative;
+  background-color: var(--color-surface-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 640px) {
+  .sanctum-card {
+    padding: 2.5rem;
+  }
+}
+
+/* Tabs */
+.sanctum-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 2rem;
+}
+
+.sanctum-tab-btn {
+  flex: 1;
+  padding: 0.75rem 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  color: var(--color-on-surface-muted);
+}
+
+.sanctum-tab-btn.active {
+  border-bottom-color: var(--color-cherry-maroon);
+  color: var(--color-on-surface);
+  font-weight: 600;
+}
+
+/* Form Groups & Proximity */
+.sanctum-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  min-height: 44px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.form-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.form-input::placeholder {
+  color: var(--color-on-surface-muted);
+  opacity: 0.6;
+}
+
+.forgot-cipher-link {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-terracotta);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.remember-me-row {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-muted);
+  user-select: none;
+}
+
+.form-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-cherry-maroon);
+}
+
+/* Fieldset */
+.form-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-legend {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  padding: 0;
+}
+
+.role-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.role-radio-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-align: center;
+}
+
+.role-radio-card:hover,
+.role-radio-card.selected {
+  border-color: var(--color-cherry-maroon);
+  background-color: rgba(74, 21, 33, 0.05);
+}
+
+.dark .role-radio-card:hover,
+.dark .role-radio-card.selected {
+  background-color: rgba(226, 125, 91, 0.1);
+}
+
+.role-radio-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.role-title {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.role-sub-bengali {
+  font-family: var(--font-bengali);
+  font-size: 0.75rem;
+  color: var(--color-on-surface-muted);
+}
+
+/* Submit Action */
+.form-submit-row {
+  margin-top: 0.5rem;
+}
+
+.sanctum-submit-btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--color-cherry-maroon);
+  box-shadow: var(--shadow-subtle);
+}
+
+.sanctum-submit-btn:hover {
+  background-color: var(--color-cherry-wine);
+  border-color: var(--color-cherry-wine);
+}
+
+/* Federated Sign-in Options */
+.wax-seals-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.wax-seals-divider-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.wax-seals-line {
+  flex-grow: 1;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.wax-seals-label {
+  margin: 0 1rem;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-on-surface-muted);
+}
+
+.wax-seals-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.wax-seal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  min-height: 44px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.wax-seal-btn:hover {
+  border-color: var(--color-cherry-maroon);
+  background-color: var(--color-surface-dim);
+}
+
+/* Guarantees */
+.sanctum-guarantee {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-family: var(--font-body);
+  color: var(--color-on-surface-muted);
+}
+
+.sanctum-guarantee-bengali {
+  font-family: var(--font-bengali);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

@@ -1,0 +1,172 @@
+/* Stage 2 - Tagline & Fellowship Section (Dignified Literary Craft) */
+
+.tagline-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 4rem 1.5rem;
+  background-color: var(--color-surface-container);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 768px) {
+  .tagline-section {
+    padding: 5rem 2rem;
+  }
+}
+
+.tagline-card {
+  max-width: 54rem;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 2.5rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  background-color: var(--color-surface-card);
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 640px) {
+  .tagline-card {
+    padding: 3.5rem 3rem;
+  }
+}
+
+.tagline-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tagline-sacred-label {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.dark .tagline-sacred-label {
+  color: var(--color-terracotta);
+}
+
+.tagline-headline-bengali {
+  font-family: var(--font-bengali);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0.5rem 0;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .tagline-headline-bengali { font-size: 3.25rem; }
+}
+
+.tagline-english-subtext {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--color-on-surface-muted);
+  max-width: 38rem;
+  margin: 0.5rem auto 0;
+}
+
+/* Subtle Typographic Divider */
+.tagline-typographic-divider {
+  width: 100%;
+  max-width: 18rem;
+  margin: 2rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--color-terracotta);
+  opacity: 0.7;
+}
+
+.divider-line {
+  height: 1px;
+  background-color: var(--border-subtle);
+  flex: 1;
+}
+
+.divider-ornament {
+  font-size: 1rem;
+}
+
+/* Fellowship Grid: Editorial Categories */
+.fellowship-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 44rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .fellowship-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.fellowship-card {
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--color-surface);
+  transition: var(--transition-smooth);
+}
+
+.fellowship-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-subtle);
+}
+
+.fellowship-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.875rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.fellowship-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fellowship-title-latin {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 0.125rem;
+}
+
+.fellowship-title-bengali {
+  font-family: var(--font-bengali);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-terracotta);
+  margin: 0 0 0.5rem;
+}
+
+.fellowship-desc {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-on-surface-muted);
+  margin: 0;
+}

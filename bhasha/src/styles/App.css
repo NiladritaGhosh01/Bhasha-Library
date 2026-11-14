@@ -1,0 +1,37 @@
+/* Outer Manuscript Canvas Layout (Refined & Harmonized) */
+
+.grand-canvas-wrap {
+  min-height: 100vh;
+  padding: 0.5rem;
+  position: relative;
+  background-color: var(--color-background);
+}
+
+@media (min-width: 640px) {
+  .grand-canvas-wrap {
+    padding: 1rem;
+  }
+}
+@media (min-width: 1024px) {
+  .grand-canvas-wrap {
+    padding: 1.5rem;
+  }
+}
+
+.grand-manuscript-container {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  background-color: var(--color-surface);
+}
+
+main.manuscript-main {
+  position: relative;
+  z-index: 10;
+}

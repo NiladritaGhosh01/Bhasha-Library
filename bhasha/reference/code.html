@@ -1,0 +1,1090 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="en" style="scroll-behavior: smooth;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Bhasha Library | ভাষা লাইব্রেরি — An Author &amp; Reader Sanctuary</title>
+<!-- Google Fonts: Havana Script Style (Dancing Script, Pacifico, Caveat) & Renaissance/Bengali Fusion -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Cinzel:wght@400;600;700;900&amp;family=Dancing+Script:wght@500;600;700&amp;family=Italiana&amp;family=Noto+Serif+Bengali:wght@400;600;700&amp;family=Outfit:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Tiro+Bangla:ital@0;1&amp;display=swap" rel="stylesheet">
+<!-- FontAwesome Icons for antique crests & literary controls -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<!-- Tailwind CSS v3 with Forms & Container Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            parchment: {
+              DEFAULT: '#FAF4E8',
+              50: '#FDFBF7',
+              100: '#FAF4E8',
+              200: '#F3E9D5',
+              300: '#EAD7BA',
+              400: '#DFBE95',
+            },
+            terracotta: {
+              DEFAULT: '#C85A32',
+              deep: '#9B381A',
+              light: '#E27D5B',
+            },
+            ochre: {
+              DEFAULT: '#E5A93C',
+              glow: '#F3C05B',
+              dark: '#B87B1E',
+            },
+            cherry: {
+              DEFAULT: '#3A0D15',
+              deep: '#24080F',
+              night: '#170409',
+              maroon: '#4A1521',
+              wine: '#5C1D2B',
+              border: '#7A2E3E',
+            },
+            gilded: {
+              gold: '#D4AF37',
+              leaf: '#C59B27',
+              amber: '#E6C687',
+              faded: '#B89758',
+            }
+          },
+          fontFamily: {
+            havana: ['"Dancing Script"', 'cursive'],
+            caveat: ['"Caveat"', 'cursive'],
+            cinzel: ['Cinzel', 'serif'],
+            italiana: ['Italiana', 'serif'],
+            playfair: ['Playfair Display', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '"Outfit"', 'sans-serif'],
+            bengali: ['Noto Serif Bengali', 'Tiro Bangla', 'serif'],
+            tiro: ['Tiro Bangla', 'serif'],
+          },
+          boxShadow: {
+            'renaissance': '0 20px 50px -10px rgba(58, 13, 21, 0.25)',
+            'gilded-glow': '0 0 35px rgba(212, 175, 55, 0.35)',
+            'pattachitra-glow': '0 0 30px rgba(200, 90, 50, 0.35)',
+            'dark-chamber': '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
+            'parchment-frame': '0 0 0 1px rgba(212, 175, 55, 0.25), 0 25px 70px -15px rgba(58, 13, 21, 0.25)',
+            'dark-frame': '0 0 0 1px rgba(212, 175, 55, 0.3), 0 25px 80px -15px rgba(0, 0, 0, 0.85)',
+          },
+          animation: {
+            'bounce-spring': 'springBounce 2.4s infinite ease-in-out',
+            'float-leaf': 'floatLeaf 8s infinite ease-in-out',
+            'pulse-glow': 'pulseGlow 3.5s infinite alternate ease-in-out',
+            'spin-celestial-cw': 'spinClockwise 40s linear infinite',
+            'spin-celestial-ccw': 'spinCounterClockwise 55s linear infinite',
+            'gentle-bob': 'gentleBob 4s ease-in-out infinite',
+            'mote-drift-1': 'moteDriftOne 18s ease-in-out infinite alternate',
+            'mote-drift-2': 'moteDriftTwo 22s ease-in-out infinite alternate',
+            'mote-drift-3': 'moteDriftThree 16s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            springBounce: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            spinClockwise: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' },
+            },
+            spinCounterClockwise: {
+              '0%': { transform: 'rotate(360deg)' },
+              '100%': { transform: 'rotate(0deg)' },
+            },
+            gentleBob: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            moteDriftOne: {
+              '0%': { transform: 'translate(0, 0) scale(1)' },
+              '50%': { transform: 'translate(45px, -35px) scale(1.15)' },
+              '100%': { transform: 'translate(-25px, -65px) scale(0.95)' },
+            },
+            moteDriftTwo: {
+              '0%': { transform: 'translate(0, 0) scale(0.9)' },
+              '50%': { transform: 'translate(-50px, 30px) scale(1.2)' },
+              '100%': { transform: 'translate(30px, 60px) scale(1)' },
+            },
+            moteDriftThree: {
+              '0%': { transform: 'translate(0, 0) scale(1)' },
+              '50%': { transform: 'translate(30px, 45px) scale(1.1)' },
+              '100%': { transform: 'translate(-35px, 20px) scale(0.85)' },
+            },
+            floatLeaf: {
+              '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
+              '50%': { transform: 'translate(15px, -15px) rotate(6deg)' },
+            },
+            pulseGlow: {
+              '0%': { filter: 'drop-shadow(0 0 15px rgba(212, 175, 55, 0.25))' },
+              '100%': { filter: 'drop-shadow(0 0 35px rgba(212, 175, 55, 0.65))' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Theme & Architectural Styles -->
+<style data-purpose="renaissance-theme">
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F3E9D5;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #170409;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4A1521;
+      border-radius: 4px;
+      border: 2px solid #FAF4E8;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #C59B27;
+      border: 2px solid #24080F;
+    }
+
+    /* Living Shimmer Inscription Text Gradients */
+    .shimmer-inscription {
+      background: linear-gradient(110deg, #3A0D15 0%, #3A0D15 25%, #D4AF37 45%, #FAF4E8 52%, #D4AF37 58%, #7A2E3E 75%, #3A0D15 100%);
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: inscriptionShimmer 6s ease-in-out infinite;
+    }
+    .dark .shimmer-inscription {
+      background: linear-gradient(110deg, #E6C687 0%, #D4AF37 25%, #FFFFFF 48%, #FFF4D2 54%, #D4AF37 75%, #9E7818 100%);
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: inscriptionShimmer 6s ease-in-out infinite;
+    }
+
+    .shimmer-havana {
+      background: linear-gradient(110deg, #9E7818 0%, #C59B27 25%, #FFF0C0 50%, #C59B27 75%, #9E7818 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: inscriptionShimmer 7s ease-in-out infinite;
+    }
+    .dark .shimmer-havana {
+      background: linear-gradient(110deg, #C59B27 0%, #F5DE88 35%, #FFFFFF 50%, #F5DE88 65%, #C59B27 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: inscriptionShimmer 7s ease-in-out infinite;
+    }
+
+    @keyframes inscriptionShimmer {
+      0% { background-position: 150% 0; }
+      100% { background-position: -150% 0; }
+    }
+
+    /* Gilded Foil text gradient */
+    .gold-foil-text {
+      background: linear-gradient(135deg, #FAF4E8 0%, #E6C687 35%, #D4AF37 60%, #9E7818 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cherry-gold-text {
+      background: linear-gradient(135deg, #3A0D15 0%, #7A2E3E 50%, #C59B27 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Spring bounce action button utility with cubic bezier physics */
+    .btn-spring {
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .btn-spring:hover {
+      transform: scale(1.04) translateY(-2px);
+    }
+    .btn-spring:active {
+      transform: scale(0.96) translateY(1px);
+    }
+
+    /* Breathing Golden Aura Behind Emblem */
+    @keyframes breathingAura {
+      0%, 100% {
+        transform: scale(0.98);
+        opacity: 0.45;
+        filter: blur(28px);
+      }
+      50% {
+        transform: scale(1.16);
+        opacity: 0.85;
+        filter: blur(42px);
+      }
+    }
+    .emblem-aura-pulse {
+      animation: breathingAura 4.5s ease-in-out infinite alternate;
+    }
+
+    /* Living Motes / Firefly Glow */
+    .living-mote {
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.65), 0 0 20px rgba(230, 198, 135, 0.4);
+    }
+    .dark .living-mote {
+      box-shadow: 0 0 14px rgba(230, 198, 135, 0.9), 0 0 25px rgba(212, 175, 55, 0.6);
+    }
+
+    /* Wax seal ripple / pulse hover */
+    .wax-seal-btn {
+      position: relative;
+      border-radius: 9999px;
+      box-shadow: 0 4px 10px rgba(58, 13, 21, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.2);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .wax-seal-btn:hover {
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Parallax Scroll Chapter Indicator Active State */
+    .chapter-dot.active {
+      transform: scale(1.4);
+      border-color: #D4AF37;
+      background-color: #D4AF37;
+      box-shadow: 0 0 14px rgba(212, 175, 55, 0.9);
+    }
+
+    /* Vintage Paper grain and chiaroscuro texture */
+    .bg-parchment-texture {
+      background-color: #FAF4E8;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 90% 85%, rgba(58, 13, 21, 0.05) 0%, transparent 50%);
+    }
+
+    /* Illuminated Manuscript Corner Ornaments */
+    .corner-ornament-tl {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 32px;
+      height: 32px;
+      border-top: 3px solid currentColor;
+      border-left: 3px solid currentColor;
+      pointer-events: none;
+    }
+    .corner-ornament-br {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-bottom: 3px solid currentColor;
+      border-right: 3px solid currentColor;
+      pointer-events: none;
+    }
+
+    /* Reveal-on-scroll animated states */
+    .reveal-scroll {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .reveal-scroll.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Arch Medallion Styling for Dual Artistic Heritage */
+    .arch-medallion-left {
+      border-radius: 9999px 9999px 1rem 1rem;
+    }
+    .arch-medallion-right {
+      border-radius: 9999px 9999px 1rem 1rem;
+    }
+    .halo-ochre {
+      box-shadow: 0 0 35px rgba(229, 169, 60, 0.45);
+    }
+    .halo-terracotta {
+      box-shadow: 0 0 35px rgba(200, 90, 50, 0.4);
+    }
+  </style>
+<!-- END: Theme & Architectural Styles -->
+</head>
+<body class="bg-parchment-300/40 dark:bg-cherry-night text-cherry-deep dark:text-parchment-100 font-playfair antialiased transition-colors duration-500 min-h-screen p-2 sm:p-4 md:p-6 lg:p-7 relative selection:bg-cherry-wine selection:text-parchment-100">
+<!-- BEGIN: Grand Outer Manuscript Canvas Container (Rounded Website Edges) -->
+<div class="relative w-full max-w-[1580px] mx-auto rounded-3xl md:rounded-[36px] bg-parchment-texture dark:bg-[#1a050b] border-2 sm:border-4 border-cherry-maroon/20 dark:border-gilded-gold/30 shadow-parchment-frame dark:shadow-dark-frame overflow-hidden transition-all duration-500">
+<!-- Ambient Frame Filigree Border Inside -->
+<div class="pointer-events-none absolute inset-2 sm:inset-3 md:inset-4 rounded-2xl md:rounded-[28px] border border-cherry-maroon/15 dark:border-gilded-gold/20 z-40"></div>
+<!-- BEGIN: Dual Artistic Heritage Sticky Background Morphing Backdrop -->
+<div aria-hidden="true" class="sticky top-0 h-screen w-full -mb-[100vh] pointer-events-none overflow-hidden z-0 select-none opacity-20 dark:opacity-25 transition-opacity duration-700" id="dualStickyBackdrop">
+<!-- Split Dual Canvas: Western Renaissance Left, Eastern Indian Pattachitra Right -->
+<div class="absolute inset-0 flex justify-between">
+<!-- Left Flank: Renaissance Nobleman Canvas (Morphs Stage 1 -> 2 -> 3) -->
+<div class="w-1/2 h-full relative overflow-hidden transition-all duration-1000" id="bgFlankRenaissance">
+<img alt="Renaissance Heritage Canvas" class="w-full h-full object-cover object-top filter sepia-[0.35] contrast-105 scale-105 transition-all duration-1000 opacity-90" id="bgImgRenaissance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-RMuoimRsCpy02-9n2BwZ82io2XI0gLruT7IJjOBi8818_aNizt0rMgqlVUs_vhlemmRbK-nt_lrqfenHZjGfw86Aomq8iLuvcyDzVwZCO2sF7ntCIM8iqhojC4SYl5E8qO9W6ss6x56wDEqJFlV56veagAN6pnPS8AQVtbOZqQla0G9A-E2FDivqpwADnBUB5631QZanQCIbSq0T51oB1Zdw-AHrLtgIpISlZOf1OJUU0Abl7xHH">
+<div class="absolute inset-0 bg-gradient-to-r from-parchment-50/50 via-transparent to-parchment-50 dark:from-cherry-night/70 dark:via-transparent dark:to-cherry-night"></div>
+</div>
+<!-- Right Flank: Indian Pattachitra Canvas (Morphs Stage 1 -> 2 -> 3) -->
+<div class="w-1/2 h-full relative overflow-hidden transition-all duration-1000" id="bgFlankPattachitra">
+<img alt="Indian Pattachitra Lotus Heritage Canvas" class="w-full h-full object-cover object-top filter saturate-110 contrast-105 scale-105 transition-all duration-1000 opacity-90" id="bgImgPattachitra" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpjJ2ofeLUBnGsc6m-ENmUBS_ODJjEkimEu79nCPypbDkqhP6XcRbjz2QdA-caBDdjOF0Khv-2PbkRlu4oOa2TKUTxCtjwRBJYey68ncnfwh5MTJGSdKNwQoenHANLFc7hoo4YRsO7ERPoRyJV3CnznKSep1h2wB7fKoSAT9cduN00EoUCh6DeiOXdm_J9j9nDNR39CdKH3POEHksY4EjRi8RmBxruJ5gCxxtAj9_YlcQZ-Kv9GLgR">
+<div class="absolute inset-0 bg-gradient-to-l from-parchment-50/50 via-transparent to-parchment-50 dark:from-cherry-night/70 dark:via-transparent dark:to-cherry-night"></div>
+</div>
+</div>
+<!-- Vignette & Warm Parchment Overlays -->
+<div class="absolute inset-0 bg-radial from-transparent via-parchment-100/60 dark:via-cherry-night/70 to-parchment-200/90 dark:to-cherry-night/95 pointer-events-none"></div>
+</div>
+<!-- END: Dual Artistic Heritage Sticky Background Backdrop -->
+<!-- BEGIN: Atmospheric Living Motion - Drifting Gold Dust, Lotus Motifs & Ink Motes Canvas -->
+<div aria-hidden="true" class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+<!-- Floating Living Motes (Vanilla Cream & Gilded Gold in Day; Firefly Glow in Night) -->
+<div class="living-mote animate-mote-drift-1 absolute w-3 h-3 rounded-full bg-gilded-gold/80 dark:bg-gilded-amber top-1/6 left-[10%] opacity-70"></div>
+<div class="living-mote animate-mote-drift-2 absolute w-2 h-2 rounded-full bg-ochre/90 dark:bg-gilded-gold top-1/3 right-[14%] opacity-80"></div>
+<div class="living-mote animate-mote-drift-3 absolute w-3.5 h-3.5 rounded-full bg-terracotta/70 dark:bg-gilded-amber/90 top-1/2 left-[18%] opacity-65"></div>
+<div class="living-mote animate-mote-drift-1 absolute w-2 h-2 rounded-full bg-cherry-maroon/40 dark:bg-gilded-gold/90 bottom-1/3 right-[22%] opacity-75"></div>
+<div class="living-mote animate-mote-drift-2 absolute w-2.5 h-2.5 rounded-full bg-gilded-gold/75 dark:bg-ochre-glow bottom-1/5 left-[28%] opacity-70"></div>
+<div class="living-mote animate-mote-drift-3 absolute w-1.5 h-1.5 rounded-full bg-gilded-amber/80 dark:bg-gilded-gold top-2/3 right-[8%] opacity-85"></div>
+<div class="living-mote animate-mote-drift-1 absolute w-2 h-2 rounded-full bg-gilded-gold/60 dark:bg-gilded-amber/90 top-12 left-1/2 opacity-60"></div>
+<!-- Parallax Floating Botanical Lotus & Literary Motifs -->
+<div class="parallax-speck absolute w-8 h-8 opacity-40 text-terracotta top-1/4 left-1/12 text-2xl font-serif" data-speed="0.25">🪷</div>
+<div class="parallax-speck absolute w-3 h-3 rounded-full bg-ochre top-2/3 right-1/6" data-speed="0.45"></div>
+<div class="parallax-speck absolute w-7 h-7 opacity-35 text-gilded-leaf top-1/3 right-1/4 text-xl" data-speed="0.18">⚜</div>
+<div class="parallax-speck absolute w-2.5 h-2.5 rounded-full bg-gilded-gold bottom-1/5 left-1/4" data-speed="0.32"></div>
+<div class="parallax-speck absolute w-8 h-8 opacity-30 text-ochre-dark top-3/4 left-1/3 text-2xl font-serif" data-speed="0.38">🪷</div>
+</div>
+<!-- END: Atmospheric Living Motion -->
+<!-- BEGIN: Sticky Floating Chapter Nav Indicator (Parallax Journey Tracker) -->
+<aside aria-label="Sanctum Chapters" class="fixed right-5 md:right-10 top-1/2 -translate-y-1/2 z-50 hidden sm:flex flex-col items-center gap-4 bg-parchment-50/80 dark:bg-cherry-deep/80 backdrop-blur-md px-3 py-4 rounded-full border border-cherry-maroon/20 dark:border-gilded-gold/30 shadow-lg transition-all duration-300">
+<span class="font-havana text-xs text-gilded-leaf dark:text-gilded-amber -rotate-90 origin-center mb-1 shimmer-havana">Chapters</span>
+<a aria-label="Chapter 1: The Sanctuary Emblem" class="chapter-dot active w-3.5 h-3.5 rounded-full border-2 border-cherry-maroon dark:border-gilded-gold bg-cherry-maroon/30 dark:bg-gilded-gold/30 transition-all duration-300" href="#stage-hero" id="dot-hero" title="Emblem Sanctuary"></a>
+<a aria-label="Chapter 2: The Sacred Inscription" class="chapter-dot w-3.5 h-3.5 rounded-full border-2 border-cherry-maroon dark:border-gilded-gold bg-cherry-maroon/30 dark:bg-gilded-gold/30 transition-all duration-300" href="#stage-tagline" id="dot-tagline" title="The Epigram"></a>
+<a aria-label="Chapter 3: Admission Sanctum" class="chapter-dot w-3.5 h-3.5 rounded-full border-2 border-cherry-maroon dark:border-gilded-gold bg-cherry-maroon/30 dark:bg-gilded-gold/30 transition-all duration-300" href="#stage-sanctum" id="dot-sanctum" title="Portals of Admission"></a>
+<div class="w-px h-6 bg-cherry-maroon/20 dark:bg-gilded-gold/30 mt-1"></div>
+<div class="animate-gentle-bob">
+<i class="fa-solid fa-feather-pointed text-[12px] text-cherry-maroon dark:text-gilded-amber"></i>
+</div>
+</aside>
+<!-- END: Sticky Floating Chapter Nav Indicator -->
+<!-- BEGIN: Navigation Header Bar -->
+<header class="sticky top-0 z-40 backdrop-blur-md bg-parchment-50/85 dark:bg-cherry-deep/85 border-b border-cherry-deep/15 dark:border-gilded-gold/20 transition-all duration-300 px-6 sm:px-10 py-3.5">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<!-- Mini Brand Insignia with Havana Script Touch -->
+<a aria-label="Bhasha Library Home" class="flex items-center gap-3 group focus:outline-none" href="#stage-hero">
+<div class="w-11 h-11 rounded-full border border-cherry-maroon/30 dark:border-gilded-gold/50 overflow-hidden p-0.5 bg-parchment-100 dark:bg-cherry-maroon shadow-md transition-transform duration-300 group-hover:rotate-6">
+<img alt="Bhasha Library Logo" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn5yBvg7UvefSWVYDqnQMk2-l2MN6NFvG-hkaU1NG-Xu2QcmW06cwH_N8kz5-fGXkqfWReLDOctXG3lImfDYDAnm3pX-T_Qx5IdhbXDZFRFUB-nMM97Jr1rFxMgEmF_oBkPtTxkc-UDGK1z6-BNH4W2JJ7l8zrsGFtblsiXfAVmvsnYPDlTPbJ8vrUIkkoWyFz-4pgrQ2GoT7kJnSzNbsSFPesHjzpSGl6v9eSncV-YqP9SJTK1ffG">
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5 leading-none">
+<span class="font-bengali text-xl font-bold tracking-normal text-cherry-deep dark:text-parchment-50">ভাষা</span>
+<span class="font-havana text-xl text-gilded-leaf dark:text-gilded-amber capitalize shimmer-havana">Library</span>
+</div>
+<span class="font-bengali text-xs tracking-wider text-cherry-maroon dark:text-gilded-amber font-semibold mt-0.5">ভাষা লাইব্রেরি</span>
+</div>
+</a>
+<!-- Quick Scroll Nav & Havana Accents -->
+<nav class="hidden md:flex items-center space-x-8 text-sm font-cinzel font-semibold tracking-wider">
+<a class="hover:text-cherry-wine dark:hover:text-gilded-amber transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-0.5 after:bg-gilded-gold after:transition-all" href="#stage-hero">Sanctuary</a>
+<a class="hover:text-cherry-wine dark:hover:text-gilded-amber transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-0.5 after:bg-gilded-gold after:transition-all" href="#stage-tagline">The Epigram</a>
+<a class="btn-spring text-gilded-leaf dark:text-gilded-gold hover:opacity-90 flex items-center gap-1.5 border border-gilded-gold/40 px-3.5 py-1.5 rounded-full bg-gilded-gold/10 font-sans text-xs tracking-wide shadow-sm" href="#stage-sanctum">
+<i class="fa-solid fa-feather-pointed text-xs"></i> Portal Login
+</a>
+</nav>
+<!-- Theme Switcher & Library Seal Status -->
+<div class="flex items-center gap-3">
+<!-- Sanctuary Seal Status Badge -->
+<div class="hidden sm:inline-flex items-center gap-1.5 text-xs font-sans font-medium px-3 py-1 rounded-full border border-amber-800/20 dark:border-gilded-gold/30 bg-parchment-200/60 dark:bg-cherry-wine/40 text-cherry-maroon dark:text-gilded-amber">
+<span class="w-2 h-2 rounded-full bg-amber-600 dark:bg-gilded-gold animate-pulse"></span>
+<span>Chamber Locked</span>
+</div>
+<!-- Theme Mode Toggle Button -->
+<button aria-label="Toggle parchment and illuminated night theme" class="btn-spring p-2.5 rounded-full border border-cherry-maroon/30 dark:border-gilded-gold/50 bg-parchment-200 dark:bg-cherry-wine text-cherry-deep dark:text-gilded-amber hover:shadow-gilded-glow cursor-pointer" data-purpose="toggle-light-dark" id="themeToggleBtn">
+<i class="fa-solid fa-moon text-base dark:hidden" title="Switch to Illuminated Velvet Night"></i>
+<i class="fa-solid fa-sun text-base hidden dark:inline text-gilded-amber" title="Switch to Vanilla Parchment Day"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- END: Navigation Header Bar -->
+<!-- BEGIN: Main Parallax Canvas -->
+<main class="relative z-10">
+<!-- BEGIN: Stage 1 - Initial Hero Screen with Dual Flanking Vignettes -->
+<section class="min-h-[92vh] flex flex-col items-center justify-center relative pt-8 pb-20 px-4 overflow-hidden reveal-scroll is-revealed" data-purpose="hero-initial-screen" id="stage-hero">
+<!-- Architectural Renaissance Arch Background Silhouette with Parallax Layer -->
+<div class="parallax-layer absolute inset-0 max-w-5xl mx-auto flex items-center justify-center opacity-10 dark:opacity-20 pointer-events-none" data-speed="0.15" id="heroArchBg">
+<svg class="w-full h-full stroke-current" fill="none" stroke-width="1.5" viewBox="0 0 800 800">
+<path d="M 100 800 V 400 A 300 300 0 0 1 700 400 V 800"></path>
+<path d="M 140 800 V 420 A 260 260 0 0 1 660 420 V 800" stroke-dasharray="6,6"></path>
+<circle cx="400" cy="400" r="280"></circle>
+<circle cx="400" cy="400" r="320" stroke-dasharray="4,8"></circle>
+</svg>
+</div>
+<div class="w-full max-w-6xl mx-auto flex flex-col items-center relative z-10">
+<!-- Triad Composition: Renaissance Nobleman Medallion + Central Emblem Astrolabe + Pattachitra Lotus Maiden Medallion -->
+<div class="w-full flex items-center justify-center gap-4 lg:gap-10 my-4">
+<!-- Flanking Left Vignette: Renaissance Nobleman (Earl of Rutland / Florentine) inside Illuminated Renaissance Arch Frame -->
+<div class="hidden md:flex flex-col items-center w-44 lg:w-56 transform -rotate-2 hover:rotate-0 transition-transform duration-500 will-change-transform" id="heroFlankLeft">
+<div class="relative p-2 rounded-t-full rounded-b-2xl bg-gradient-to-b from-gilded-gold via-cherry-maroon to-cherry-night shadow-renaissance border-2 border-gilded-gold/50 group">
+<div class="w-40 lg:w-52 h-56 lg:h-72 rounded-t-full rounded-b-xl overflow-hidden border-2 border-parchment-200/80 bg-cherry-night relative">
+<img alt="Renaissance Nobleman Portrait" class="w-full h-full object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-RMuoimRsCpy02-9n2BwZ82io2XI0gLruT7IJjOBi8818_aNizt0rMgqlVUs_vhlemmRbK-nt_lrqfenHZjGfw86Aomq8iLuvcyDzVwZCO2sF7ntCIM8iqhojC4SYl5E8qO9W6ss6x56wDEqJFlV56veagAN6pnPS8AQVtbOZqQla0G9A-E2FDivqpwADnBUB5631QZanQCIbSq0T51oB1Zdw-AHrLtgIpISlZOf1OJUU0Abl7xHH">
+<div class="absolute inset-0 bg-gradient-to-t from-cherry-night/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 inset-x-0 text-center">
+<span class="font-cinzel text-[10px] tracking-widest text-gilded-amber uppercase font-semibold">Continental Folio</span>
+<p class="font-playfair italic text-xs text-parchment-100">Florentine Humanism</p>
+</div>
+</div>
+<!-- Ornamental Arch Crown Filigree -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 text-gilded-gold text-xs">⚜</div>
+</div>
+</div>
+<!-- Central Emblem & Celestial Rings with Living Counter-Rotation & Aura -->
+<div class="relative group my-2 will-change-transform flex-shrink-0" id="heroMedallionWrap">
+<!-- Breathing Golden Aura Halo Pulse -->
+<div class="emblem-aura-pulse absolute -inset-6 sm:-inset-8 rounded-full bg-gradient-to-tr from-gilded-gold/40 via-ochre-glow/30 to-amber-500/20 pointer-events-none"></div>
+<!-- Celestial Ring 1: Clockwise (~40s) Outer Dashed Halo -->
+<div class="absolute -inset-5 sm:-inset-7 rounded-full border-2 border-dashed border-gilded-gold/60 dark:border-gilded-gold/80 animate-spin-celestial-cw pointer-events-none"></div>
+<!-- Celestial Ring 2: Counter-Clockwise (~55s) Concentric Gilded Astrolabe Halo with Orbs -->
+<div class="absolute -inset-9 sm:-inset-11 rounded-full border border-cherry-maroon/25 dark:border-gilded-gold/40 animate-spin-celestial-ccw pointer-events-none">
+<div class="w-2.5 h-2.5 rounded-full bg-gilded-gold absolute -top-1.5 left-1/2 -translate-x-1/2 shadow-sm"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-terracotta-light absolute -bottom-1.5 left-1/2 -translate-x-1/2 shadow-sm"></div>
+<div class="w-2 h-2 rounded-full bg-ochre absolute top-1/2 -left-1 -translate-y-1/2 shadow-sm"></div>
+<div class="w-2 h-2 rounded-full bg-gilded-amber absolute top-1/2 -right-1 -translate-y-1/2 shadow-sm"></div>
+</div>
+<!-- Logo Container Frame with Requested Image https://lh3.googleusercontent.com/aida-public/AB6AXuBn5yBvg7UvefSWVYDqnQMk2-l2MN6NFvG-hkaU1NG-Xu2QcmW06cwH_N8kz5-fGXkqfWReLDOctXG3lImfDYDAnm3pX-T_Qx5IdhbXDZFRFUB-nMM97Jr1rFxMgEmF_oBkPtTxkc-UDGK1z6-BNH4W2JJ7l8zrsGFtblsiXfAVmvsnYPDlTPbJ8vrUIkkoWyFz-4pgrQ2GoT7kJnSzNbsSFPesHjzpSGl6v9eSncV-YqP9SJTK1ffG -->
+<div class="w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full p-2.5 bg-gradient-to-tr from-cherry-maroon via-ochre to-parchment-200 shadow-2xl dark:shadow-gilded-glow animate-pulse-glow transition-transform duration-500 hover:scale-105 relative z-10">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-parchment-100 dark:border-cherry-deep bg-parchment-50 dark:bg-cherry-night relative">
+<img alt="Bhasha Library - Open Book with Bengali script and Feather Quill" class="w-full h-full object-cover transform scale-105 transition-transform duration-700 hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn5yBvg7UvefSWVYDqnQMk2-l2MN6NFvG-hkaU1NG-Xu2QcmW06cwH_N8kz5-fGXkqfWReLDOctXG3lImfDYDAnm3pX-T_Qx5IdhbXDZFRFUB-nMM97Jr1rFxMgEmF_oBkPtTxkc-UDGK1z6-BNH4W2JJ7l8zrsGFtblsiXfAVmvsnYPDlTPbJ8vrUIkkoWyFz-4pgrQ2GoT7kJnSzNbsSFPesHjzpSGl6v9eSncV-YqP9SJTK1ffG">
+</div>
+</div>
+<!-- Medallion Jewel Pendant Accent with Gentle Bobbing Floating Motion -->
+<div class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-cherry-maroon dark:bg-gilded-gold text-parchment-100 dark:text-cherry-night px-5 py-1.5 rounded-full shadow-md flex items-center gap-2 border border-gilded-gold/40 z-20 animate-gentle-bob whitespace-nowrap">
+<i class="fa-solid fa-compass-drafting text-[10px]"></i>
+<span class="font-bengali text-xs font-semibold">পূর্ব ও পাশ্চাত্যের মেলবন্ধন</span>
+</div>
+</div>
+<!-- Flanking Right Vignette: Indian Pattachitra Maiden with Lotus & Ochre Halo in Traditional Arch Frame -->
+<div class="hidden md:flex flex-col items-center w-44 lg:w-56 transform rotate-2 hover:rotate-0 transition-transform duration-500 will-change-transform" id="heroFlankRight">
+<div class="relative p-2 rounded-t-full rounded-b-2xl bg-gradient-to-b from-ochre via-terracotta to-cherry-night shadow-pattachitra-glow border-2 border-ochre/60 group">
+<div class="w-40 lg:w-52 h-56 lg:h-72 rounded-t-full rounded-b-xl overflow-hidden border-2 border-parchment-200/80 bg-cherry-night relative">
+<img alt="Pattachitra Lotus Maiden Portrait" class="w-full h-full object-cover object-top filter group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpjJ2ofeLUBnGsc6m-ENmUBS_ODJjEkimEu79nCPypbDkqhP6XcRbjz2QdA-caBDdjOF0Khv-2PbkRlu4oOa2TKUTxCtjwRBJYey68ncnfwh5MTJGSdKNwQoenHANLFc7hoo4YRsO7ERPoRyJV3CnznKSep1h2wB7fKoSAT9cduN00EoUCh6DeiOXdm_J9j9nDNR39CdKH3POEHksY4EjRi8RmBxruJ5gCxxtAj9_YlcQZ-Kv9GLgR">
+<div class="absolute inset-0 bg-gradient-to-t from-cherry-night/85 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 inset-x-0 text-center">
+<span class="font-bengali text-[11px] tracking-wider text-ochre-glow font-bold">পটচিত্র শিল্পকলা</span>
+<p class="font-havana text-xs text-parchment-100 shimmer-havana">The Lotus Lore</p>
+</div>
+</div>
+<!-- Ornamental Lotus Arch Finial -->
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-terracotta text-sm">🪷</div>
+</div>
+</div>
+</div>
+<!-- Stage 1 Headings & Havana Script Integration -->
+<div class="mt-6 text-center space-y-3 will-change-transform max-w-3xl" id="heroContent">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-cherry-maroon/20 dark:border-gilded-gold/30 bg-parchment-100/60 dark:bg-cherry-wine/30 text-xs font-sans font-semibold tracking-[0.25em] uppercase text-cherry-wine dark:text-gilded-amber">
+<span>✦ Bengal Pattachitra meets European Renaissance ✦</span>
+</div>
+<span class="font-sans text-xs sm:text-sm tracking-[0.3em] text-cherry-wine dark:text-gilded-amber uppercase font-semibold block">
+      The Authors &amp; Readers Guild
+    </span>
+<h1 class="font-italiana text-4xl sm:text-6xl md:text-7xl font-bold tracking-wider text-cherry-deep dark:text-parchment-50 flex flex-wrap items-center justify-center gap-x-3">
+<span class="font-bengali font-bold tracking-normal">ভাষা</span>
+<span class="font-havana font-normal normal-case text-5xl sm:text-7xl md:text-8xl dark:text-gilded-amber tracking-normal -mt-2 text-gilded-gold">Library</span>
+</h1>
+<p class="font-bengali text-base sm:text-lg text-cherry-maroon/90 dark:text-parchment-200 max-w-xl mx-auto">বর্ণমালার আদি সুর থেকে আধুনিক সাহিত্যের দিগন্তে—বাংলা শব্দের এক চিরন্তন আশ্রয়।</p>
+</div>
+<!-- Scroll Invitatory with Animated Spring Quill & Floating Bob -->
+<div class="mt-8 flex flex-col items-center gap-3">
+<span class="font-sans text-xs uppercase tracking-[0.25em] text-cherry-deep/70 dark:text-gilded-amber/80 font-medium">
+      Scroll to enter the realm of words
+    </span>
+<a aria-label="Scroll down to tagline section" class="btn-spring w-12 h-12 rounded-full border-2 border-cherry-maroon dark:border-gilded-gold flex items-center justify-center text-cherry-maroon dark:text-gilded-gold shadow-md hover:bg-cherry-maroon hover:text-parchment-100 dark:hover:bg-gilded-gold dark:hover:text-cherry-deep" href="#stage-tagline">
+<i class="fa-solid fa-feather text-lg animate-bounce-spring"></i>
+</a>
+</div>
+</div>
+<!-- Ornamental Vignette Bottom Divider -->
+<div class="absolute bottom-2 w-full flex items-center justify-center opacity-60 pointer-events-none">
+<span class="text-xs tracking-widest text-gilded-leaf dark:text-gilded-gold">❦ ❧ 🪷 ❧ ❦</span>
+</div>
+</section>
+<!-- END: Stage 1 - Initial Hero Screen -->
+<!-- BEGIN: Stage 2 - Scroll Tagline Scene with Cultural Fusion Backdrop -->
+<section class="min-h-screen flex items-center justify-center relative py-24 px-4 bg-parchment-200/40 dark:bg-cherry-deep/60 border-y border-cherry-deep/10 dark:border-gilded-gold/20 reveal-scroll is-revealed" data-purpose="scroll-tagline-scene" id="stage-tagline">
+<!-- Pattachitra Florals & Architectural Backdrop Frame with Parallax Floating Tilt -->
+<div class="max-w-5xl w-full mx-auto relative p-8 sm:p-14 md:p-18 rounded-3xl md:rounded-[32px] border-2 border-cherry-maroon/20 dark:border-gilded-gold/40 shadow-renaissance dark:shadow-dark-chamber bg-parchment-100/90 dark:bg-cherry-night/95 overflow-hidden transform transition-all duration-700 will-change-transform" id="taglineCard">
+<!-- Renaissance Manuscript Corners -->
+<div class="corner-ornament-tl text-gilded-leaf dark:text-gilded-gold"></div>
+<div class="corner-ornament-br text-gilded-leaf dark:text-gilded-gold"></div>
+<div class="absolute top-2.5 right-2.5 w-8 h-8 border-t-2 border-r-2 border-terracotta dark:border-gilded-gold"></div>
+<div class="absolute bottom-2.5 left-2.5 w-8 h-8 border-b-2 border-l-2 border-ochre dark:border-gilded-gold"></div>
+<!-- Background Motif Watermarks: Classical Florentine Nobleman + Saree Lotus Maiden Watermark Duo -->
+<div class="absolute -right-4 -top-6 w-48 h-64 opacity-10 dark:opacity-15 pointer-events-none rounded-2xl overflow-hidden filter grayscale rotate-6">
+<img alt="Florentine watermark" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Id4MeoYE_HDc_GpRmehec5-VC58TS-NDmmGobIbPc9XXqhUhFaf-_fbKwsLjTNk-0tY_HXaY6SYLhiXgZM56IvGaAECFjxlaB3lPKfx5Wftlp24Pa1KlyoxYi044HJ4vH6JmayGCQyte9lVYjGkp-Jce6l8RmJu6gXCCW_oeOeck7JxEkRKXiEshl4lnI_gTEM-TioG2L51migR5dYgSPrXJhcYFAJXYvGpDIKoQqTDsk7tlwbbu">
+</div>
+<div class="absolute -left-6 -bottom-6 w-52 h-68 opacity-10 dark:opacity-15 pointer-events-none rounded-2xl overflow-hidden filter grayscale -rotate-6">
+<img alt="Pattachitra maiden watermark" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsqcP5xvnNWZy-KG22e2wewXMmpmuSpIQXU3D5Bpwzi2hOQ85ISQvjNDgxOOhvV1On1kNS8wkL6qkm_lRk-m6Fe4fs65rnbOAK-ubMpewWuk33iy6WFvdZgs5gp22TN09No5cAQszzZlIC6nTkqqDKBjYxamQ-RG6cn0pZ12RysCvhCggv-N25Wqcf1y4bBxITA27e9ZoR-Yu6kn4JLIhmcCJy8rQLnDrbyzbZdv-Ej58mljvpg3oo">
+</div>
+<!-- Floating Antique Literary Motifs with Parallax Differential Translation -->
+<div class="parallax-speck absolute right-12 top-10 text-6xl text-terracotta/10 dark:text-gilded-gold/10 pointer-events-none font-serif select-none" data-speed="0.2">
+🪷
+</div>
+<div class="parallax-speck absolute left-12 bottom-12 text-7xl text-cherry-maroon/10 dark:text-gilded-gold/10 pointer-events-none font-serif select-none" data-speed="0.3">
+✒
+</div>
+<div class="relative z-10 text-center flex flex-col items-center">
+<!-- Miniature Floating Crest Emblem: Pattachitra Lotus & Antique Book -->
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-ochre bg-parchment-50 dark:bg-cherry-deep mb-4 shadow-md transition-transform duration-300 hover:rotate-12 animate-gentle-bob halo-ochre">
+<i class="fa-solid fa-book-open-reader text-2xl text-terracotta-deep dark:text-ochre-glow"></i>
+</div>
+<div class="font-sans text-xs sm:text-sm tracking-[0.3em] uppercase text-gilded-leaf dark:text-gilded-amber font-semibold mb-2">
+— The Sacred Inscription —
+</div>
+<div class="font-havana text-2xl sm:text-3xl text-cherry-maroon/70 dark:text-gilded-amber/80 mb-1 shimmer-havana">
+"Tales bound in ink &amp; eternity"
+</div>
+<!-- Main Bengali Tagline in Gilded Foil Shimmer Elegance (VERBATIM) -->
+<h2 class="font-bengali text-4xl sm:text-6xl md:text-7xl font-bold tracking-normal my-4 leading-tight">
+<span class="shimmer-inscription drop-shadow-sm">
+"গল্প সবার জমবে এবার"
+</span>
+</h2>
+<!-- European Renaissance Poetic Translation / Subtext -->
+<p class="font-playfair italic text-lg sm:text-2xl text-cherry-maroon/90 dark:text-parchment-200 max-w-2xl mx-auto mt-2 font-medium">
+"Every story finds its noble voice, every wandering reader finds an endless world."
+</p>
+<!-- Decorative Floral Divider with Inkwell & Lotus Filigree -->
+<div class="w-full max-w-md mx-auto my-7 flex items-center justify-center gap-4 text-gilded-leaf dark:text-gilded-gold opacity-80">
+<div class="h-px bg-gradient-to-r from-transparent via-current to-transparent flex-1"></div>
+<i class="fa-solid fa-pen-nib text-lg animate-gentle-bob"></i>
+<span class="text-terracotta text-lg">🪷</span>
+<span class="font-serif text-xl">✤</span>
+<span class="text-ochre text-lg">🪷</span>
+<i class="fa-solid fa-scroll text-lg animate-gentle-bob" style="animation-delay: 1.5s;"></i>
+<div class="h-px bg-gradient-to-r from-transparent via-current to-transparent flex-1"></div>
+</div>
+<!-- Art-Integrated Cultural Cards: Florentine & Pattachitra Inspirations -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl w-full mx-auto mt-2 text-center">
+<div class="btn-spring p-5 rounded-2xl border border-cherry-maroon/15 dark:border-gilded-gold/25 bg-parchment-50/70 dark:bg-cherry-deep/50 shadow-sm relative overflow-hidden group">
+<div class="w-10 h-10 mx-auto mb-2 rounded-full overflow-hidden border border-gilded-gold/50 shadow-sm">
+<img alt="Renaissance Scholar Portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Id4MeoYE_HDc_GpRmehec5-VC58TS-NDmmGobIbPc9XXqhUhFaf-_fbKwsLjTNk-0tY_HXaY6SYLhiXgZM56IvGaAECFjxlaB3lPKfx5Wftlp24Pa1KlyoxYi044HJ4vH6JmayGCQyte9lVYjGkp-Jce6l8RmJu6gXCCW_oeOeck7JxEkRKXiEshl4lnI_gTEM-TioG2L51migR5dYgSPrXJhcYFAJXYvGpDIKoQqTDsk7tlwbbu">
+</div>
+<span class="block font-havana text-xl text-gilded-leaf dark:text-gilded-amber leading-none mb-1 shimmer-havana">Author Fellowship</span>
+<span class="font-bengali text-base font-semibold text-cherry-deep dark:text-parchment-100">লেখকদের আড্ডা</span>
+<p class="font-playfair text-[11px] italic text-cherry-deep/70 dark:text-parchment-300 mt-1">The academy of scribes &amp; free thinkers</p>
+</div>
+<div class="btn-spring p-5 rounded-2xl border border-cherry-maroon/15 dark:border-gilded-gold/25 bg-parchment-50/70 dark:bg-cherry-deep/50 shadow-sm relative overflow-hidden group">
+<div class="w-10 h-10 mx-auto mb-2 rounded-full overflow-hidden border border-terracotta/50 shadow-sm">
+<img alt="Lotus Reader" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpjJ2ofeLUBnGsc6m-ENmUBS_ODJjEkimEu79nCPypbDkqhP6XcRbjz2QdA-caBDdjOF0Khv-2PbkRlu4oOa2TKUTxCtjwRBJYey68ncnfwh5MTJGSdKNwQoenHANLFc7hoo4YRsO7ERPoRyJV3CnznKSep1h2wB7fKoSAT9cduN00EoUCh6DeiOXdm_J9j9nDNR39CdKH3POEHksY4EjRi8RmBxruJ5gCxxtAj9_YlcQZ-Kv9GLgR">
+</div>
+<span class="block font-havana text-xl text-gilded-leaf dark:text-gilded-amber leading-none mb-1 shimmer-havana">Reader Sanctuary</span>
+<span class="font-bengali text-base font-semibold text-cherry-deep dark:text-parchment-100">অনাবিল পাঠাগার</span>
+<p class="font-playfair text-[11px] italic text-cherry-deep/70 dark:text-parchment-300 mt-1">Shelter for curious wandering minds</p>
+</div>
+</div>
+<!-- Continue Journey CTA to Sealed Portal -->
+<div class="mt-10">
+<a class="btn-spring inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-cherry-deep dark:bg-gilded-gold text-parchment-100 dark:text-cherry-deep font-sans font-bold text-sm tracking-widest uppercase shadow-lg hover:shadow-gilded-glow border border-gilded-gold/30" href="#stage-sanctum">
+<span>Approach the Sealed Gateway</span>
+<i class="fa-solid fa-key text-xs animate-gentle-bob"></i>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Stage 2 - Scroll Tagline Scene -->
+<!-- BEGIN: Stage 3 - The Gated Gateway (Login & Sign In Sanctum) -->
+<section class="min-h-screen flex items-center justify-center relative py-20 px-4 reveal-scroll is-revealed" data-purpose="authentication-sanctum" id="stage-sanctum">
+<div class="max-w-4xl w-full mx-auto transform transition-all duration-700 will-change-transform" id="sanctumContainer">
+<!-- Sanctum Architectural Title -->
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cherry-maroon/30 dark:border-gilded-gold/40 bg-cherry-maroon/5 dark:bg-gilded-gold/10 text-cherry-wine dark:text-gilded-amber font-sans text-xs tracking-widest uppercase font-semibold mb-3">
+<i class="fa-solid fa-shield-halved animate-pulse"></i> Gated Inner Vault
+</div>
+<h3 class="font-cinzel text-3xl sm:text-4xl md:text-5xl font-bold text-cherry-deep dark:text-parchment-50 flex flex-wrap items-center justify-center gap-2">
+<span>The Portals of</span>
+<span class="font-havana font-normal normal-case text-4xl sm:text-5xl md:text-6xl text-gilded-leaf dark:text-gilded-amber tracking-normal shimmer-havana">Admission</span>
+</h3>
+<p class="font-bengali text-lg sm:text-xl text-cherry-maroon dark:text-gilded-amber mt-2">
+গ্রন্থাগারের রুদ্ধদ্বার উন্মোচনে নিজের পরিচয় লিপিবদ্ধ করুন
+</p>
+<p class="font-playfair text-sm text-cherry-deep/70 dark:text-parchment-300 mt-1 italic">
+* The manuscript vault remains sealed until an author or reader signs their parchment seal below.
+</p>
+</div>
+<!-- BEGIN: Illuminated Bookplate Auth Card with Dual Heritage Corner Vignettes -->
+<div class="relative bg-parchment-50 dark:bg-cherry-deep/95 rounded-3xl md:rounded-[32px] border-4 border-double border-cherry-maroon/40 dark:border-gilded-gold/60 p-6 sm:p-10 shadow-renaissance dark:shadow-dark-chamber overflow-hidden">
+<!-- Ornamental Corners -->
+<div class="corner-ornament-tl text-gilded-leaf dark:text-gilded-gold"></div>
+<div class="corner-ornament-br text-gilded-leaf dark:text-gilded-gold"></div>
+<!-- Tiny Header Art Emblems: Florentine Nobleman Seal on Left, Pattachitra Lotus Seal on Right -->
+<div class="flex items-center justify-between px-2 mb-4 border-b border-cherry-maroon/10 dark:border-gilded-gold/20 pb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-gilded-gold/60 shadow-sm">
+<img alt="Renaissance Seal" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Id4MeoYE_HDc_GpRmehec5-VC58TS-NDmmGobIbPc9XXqhUhFaf-_fbKwsLjTNk-0tY_HXaY6SYLhiXgZM56IvGaAECFjxlaB3lPKfx5Wftlp24Pa1KlyoxYi044HJ4vH6JmayGCQyte9lVYjGkp-Jce6l8RmJu6gXCCW_oeOeck7JxEkRKXiEshl4lnI_gTEM-TioG2L51migR5dYgSPrXJhcYFAJXYvGpDIKoQqTDsk7tlwbbu">
+</div>
+<span class="font-cinzel text-xs text-cherry-deep/70 dark:text-parchment-200 hidden sm:inline">Palazzo Codex</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-ochre-dark dark:text-ochre-glow font-serif">
+<span>✦</span><span>🪷</span><span>✦</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-bengali text-xs text-cherry-maroon dark:text-gilded-amber hidden sm:inline">বঙ্গীয় ঐতিহ্য</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-terracotta/60 shadow-sm">
+<img alt="Pattachitra Seal" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsqcP5xvnNWZy-KG22e2wewXMmpmuSpIQXU3D5Bpwzi2hOQ85ISQvjNDgxOOhvV1On1kNS8wkL6qkm_lRk-m6Fe4fs65rnbOAK-ubMpewWuk33iy6WFvdZgs5gp22TN09No5cAQszzZlIC6nTkqqDKBjYxamQ-RG6cn0pZ12RysCvhCggv-N25Wqcf1y4bBxITA27e9ZoR-Yu6kn4JLIhmcCJy8rQLnDrbyzbZdv-Ej58mljvpg3oo">
+</div>
+</div>
+</div>
+<!-- Auth Tab Switcher (Sign In vs Register Guild) with Soft Ripple / Spring -->
+<div class="flex border-b-2 border-cherry-maroon/20 dark:border-gilded-gold/30 mb-8" role="tablist">
+<button aria-selected="true" class="btn-spring flex-1 py-3 text-center font-cinzel font-bold text-sm sm:text-base tracking-wider uppercase border-b-4 border-cherry-maroon dark:border-gilded-gold text-cherry-deep dark:text-gilded-gold transition-all" id="tabSignInBtn" onclick="switchAuthTab('signin')" role="tab">
+<i class="fa-solid fa-feather mr-2"></i> Sign In (প্রবেশ)
+</button>
+<button aria-selected="false" class="btn-spring flex-1 py-3 text-center font-cinzel font-bold text-sm sm:text-base tracking-wider uppercase border-b-4 border-transparent text-cherry-maroon/50 dark:text-parchment-300/50 hover:text-cherry-deep dark:hover:text-parchment-100 transition-all" id="tabSignUpBtn" onclick="switchAuthTab('signup')" role="tab">
+<i class="fa-solid fa-scroll mr-2"></i> Join Guild (নিবন্ধন)
+</button>
+</div>
+<!-- Form Area -->
+<form class="space-y-6" id="sanctumAuthForm" onsubmit="handleAuthSubmit(event)">
+<!-- Sign In Pane (Default) -->
+<div class="space-y-5" id="signInFields">
+<!-- Pen Name / Email Field -->
+<div class="space-y-1.5">
+<label class="block font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber" for="signinEmail">
+Pen Name or Manuscript Email
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cherry-maroon/60 dark:text-gilded-amber/60">
+<i class="fa-solid fa-envelope-open-text text-sm"></i>
+</div>
+<input class="w-full pl-10 pr-4 py-3 bg-parchment-100/70 dark:bg-cherry-night/80 border border-cherry-maroon/30 dark:border-gilded-gold/40 rounded-xl text-cherry-deep dark:text-parchment-50 font-playfair focus:ring-2 focus:ring-gilded-gold focus:border-transparent outline-none transition-all placeholder:text-cherry-maroon/35 dark:placeholder:text-parchment-300/30" id="signinEmail" placeholder="poet@bhashalibrary.org or রবীন্দ্রনাথ" required="" type="text">
+</div>
+</div>
+<!-- Cipher / Password Field -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber" for="signinPassword">
+Secret Cipher (পাসওয়ার্ড)
+</label>
+<a class="font-havana text-base text-cherry-wine dark:text-gilded-leaf hover:underline shimmer-havana" href="#stage-sanctum" onclick="alert('A royal messenger owl will send your cipher reset talisman.')">
+Forgotten Cipher?
+</a>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cherry-maroon/60 dark:text-gilded-amber/60">
+<i class="fa-solid fa-lock text-sm"></i>
+</div>
+<input class="w-full pl-10 pr-4 py-3 bg-parchment-100/70 dark:bg-cherry-night/80 border border-cherry-maroon/30 dark:border-gilded-gold/40 rounded-xl text-cherry-deep dark:text-parchment-50 font-playfair focus:ring-2 focus:ring-gilded-gold focus:border-transparent outline-none transition-all" id="signinPassword" placeholder="••••••••••••" required="" type="password">
+</div>
+</div>
+<!-- Keep Seal Active Checkbox -->
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<input checked="" class="rounded border-cherry-maroon/40 text-cherry-maroon focus:ring-gilded-gold dark:bg-cherry-night dark:border-gilded-gold/40" type="checkbox">
+<span class="font-playfair text-sm text-cherry-deep/80 dark:text-parchment-200">Keep seal inscribed (Remember Me)</span>
+</label>
+</div>
+</div>
+<!-- End: Sign In Pane -->
+<!-- Sign Up Pane (Hidden initially) -->
+<div class="space-y-5 hidden" id="signUpFields">
+<!-- Full / Pen Name -->
+<div class="space-y-1.5">
+<label class="block font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber" for="regName">
+Honorary Pen Name (লেখক বা পাঠকের নাম)
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cherry-maroon/60 dark:text-gilded-amber/60">
+<i class="fa-solid fa-signature text-sm"></i>
+</div>
+<input class="w-full pl-10 pr-4 py-3 bg-parchment-100/70 dark:bg-cherry-night/80 border border-cherry-maroon/30 dark:border-gilded-gold/40 rounded-xl text-cherry-deep dark:text-parchment-50 font-playfair focus:ring-2 focus:ring-gilded-gold focus:border-transparent outline-none transition-all placeholder:text-cherry-maroon/35 dark:placeholder:text-parchment-300/30" id="regName" placeholder="e.g. Michael Madhusudan / বনলতা সেন" type="text">
+</div>
+</div>
+<!-- Registration Email -->
+<div class="space-y-1.5">
+<label class="block font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber" for="regEmail">
+Guild Communication Email
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cherry-maroon/60 dark:text-gilded-amber/60">
+<i class="fa-solid fa-scroll text-sm"></i>
+</div>
+<input class="w-full pl-10 pr-4 py-3 bg-parchment-100/70 dark:bg-cherry-night/80 border border-cherry-maroon/30 dark:border-gilded-gold/40 rounded-xl text-cherry-deep dark:text-parchment-50 font-playfair focus:ring-2 focus:ring-gilded-gold focus:border-transparent outline-none transition-all" id="regEmail" placeholder="scribe@guild.com" type="email">
+</div>
+</div>
+<!-- Literary Role Selection -->
+<div class="space-y-2">
+<label class="block font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber">
+Choose Your Literary Calling (আপনার ভূমিকা)
+</label>
+<div class="grid grid-cols-3 gap-3">
+<label class="btn-spring flex flex-col items-center justify-center p-3.5 rounded-xl border border-cherry-maroon/30 dark:border-gilded-gold/30 cursor-pointer hover:border-gilded-gold transition-colors bg-parchment-100/40 dark:bg-cherry-night/60 text-center">
+<input checked="" class="text-cherry-maroon focus:ring-gilded-gold" name="guildRole" type="radio" value="reader">
+<i class="fa-solid fa-book-open mt-1 text-sm text-cherry-maroon dark:text-gilded-amber"></i>
+<span class="font-sans text-xs font-bold mt-1">Reader</span>
+<span class="font-bengali text-[10px] text-cherry-deep/70 dark:text-parchment-300">পাঠক</span>
+</label>
+<label class="btn-spring flex flex-col items-center justify-center p-3.5 rounded-xl border border-cherry-maroon/30 dark:border-gilded-gold/30 cursor-pointer hover:border-gilded-gold transition-colors bg-parchment-100/40 dark:bg-cherry-night/60 text-center">
+<input class="text-cherry-maroon focus:ring-gilded-gold" name="guildRole" type="radio" value="author">
+<i class="fa-solid fa-quill-pen-bifurcated mt-1 text-sm text-cherry-maroon dark:text-gilded-amber"></i>
+<span class="font-sans text-xs font-bold mt-1">Author</span>
+<span class="font-bengali text-[10px] text-cherry-deep/70 dark:text-parchment-300">লেখক</span>
+</label>
+<label class="btn-spring flex flex-col items-center justify-center p-3.5 rounded-xl border border-cherry-maroon/30 dark:border-gilded-gold/30 cursor-pointer hover:border-gilded-gold transition-colors bg-parchment-100/40 dark:bg-cherry-night/60 text-center">
+<input class="text-cherry-maroon focus:ring-gilded-gold" name="guildRole" type="radio" value="both">
+<i class="fa-solid fa-masks-theater mt-1 text-sm text-cherry-maroon dark:text-gilded-amber"></i>
+<span class="font-sans text-xs font-bold mt-1">Both</span>
+<span class="font-bengali text-[10px] text-cherry-deep/70 dark:text-parchment-300">উভয়ই</span>
+</label>
+</div>
+</div>
+<!-- New Cipher Field -->
+<div class="space-y-1.5">
+<label class="block font-sans text-xs font-bold tracking-wider uppercase text-cherry-maroon dark:text-gilded-amber" for="regPassword">
+Inscribe New Cipher (পাসওয়ার্ড তৈরি করুন)
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cherry-maroon/60 dark:text-gilded-amber/60">
+<i class="fa-solid fa-key text-sm"></i>
+</div>
+<input class="w-full pl-10 pr-4 py-3 bg-parchment-100/70 dark:bg-cherry-night/80 border border-cherry-maroon/30 dark:border-gilded-gold/40 rounded-xl text-cherry-deep dark:text-parchment-50 font-playfair focus:ring-2 focus:ring-gilded-gold focus:border-transparent outline-none transition-all" id="regPassword" placeholder="Min 8 glyphs &amp; runes" type="password">
+</div>
+</div>
+</div>
+<!-- End: Sign Up Pane -->
+<!-- Primary Spring Bouncy Submit CTA -->
+<div class="pt-3">
+<button class="btn-spring w-full py-4 px-6 rounded-2xl bg-cherry-deep hover:bg-cherry-maroon dark:bg-gilded-gold dark:hover:bg-gilded-leaf text-parchment-50 dark:text-cherry-deep font-sans font-bold text-base tracking-[0.15em] uppercase shadow-renaissance hover:shadow-gilded-glow flex items-center justify-center gap-3 border border-gilded-gold/40 cursor-pointer" id="submitAuthBtn" type="submit">
+<i class="fa-solid fa-door-open"></i>
+<span id="btnActionText">Enter the Library • প্রবেশ করুন</span>
+</button>
+</div>
+<!-- Alternative Wax Seal Crest Sign-in with Enhanced Pulse Hover -->
+<div class="pt-4 text-center">
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-cherry-maroon/20 dark:border-gilded-gold/30"></div>
+<span class="flex-shrink mx-4 font-havana text-xl text-cherry-maroon/80 dark:text-gilded-amber/80 shimmer-havana">Or sign with royal wax seal</span>
+<div class="flex-grow border-t border-cherry-maroon/20 dark:border-gilded-gold/30"></div>
+</div>
+<div class="flex justify-center gap-5 mt-3">
+<!-- Wax Seal 1: Google Manuscript -->
+<button class="btn-spring wax-seal-btn w-12 h-12 bg-cherry-maroon text-parchment-100 dark:bg-cherry-night dark:border dark:border-gilded-gold flex items-center justify-center hover:text-gilded-amber transition-colors" onclick="triggerWaxSeal('Google Scholar')" title="Inscribe with Google Manuscript" type="button">
+<i class="fa-brands fa-google text-lg"></i>
+</button>
+<!-- Wax Seal 2: Apple Codex -->
+<button class="btn-spring wax-seal-btn w-12 h-12 bg-cherry-maroon text-parchment-100 dark:bg-cherry-night dark:border dark:border-gilded-gold flex items-center justify-center hover:text-gilded-amber transition-colors" onclick="triggerWaxSeal('Apple Codex')" title="Inscribe with Apple Codex" type="button">
+<i class="fa-brands fa-apple text-lg"></i>
+</button>
+<!-- Wax Seal 3: Pen & Ink Royal Charter -->
+<button class="btn-spring wax-seal-btn w-12 h-12 bg-cherry-maroon text-parchment-100 dark:bg-cherry-night dark:border dark:border-gilded-gold flex items-center justify-center hover:text-gilded-amber transition-colors" onclick="triggerWaxSeal('Bengal Literary Guild')" title="Inscribe with Royal Guild Fellowship" type="button">
+<i class="fa-solid fa-feather-pointed text-lg"></i>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- END: Illuminated Bookplate Auth Card -->
+<!-- Sanctuary Rules / Guild Guarantee -->
+<div class="mt-8 text-center text-xs font-sans tracking-wider text-cherry-deep/70 dark:text-gilded-amber/70 space-y-1">
+<p class="font-medium">✦ Manuscripts and translations protected by historical preservation covenants ✦</p>
+<p class="font-bengali text-sm text-cherry-maroon dark:text-parchment-200">লেখক ও পাঠকদের যৌথ মিলনতীর্থ — সর্বস্বত্ব সংরক্ষিত ২০২৬</p>
+</div>
+</div>
+</section>
+<!-- END: Stage 3 - The Gated Gateway -->
+</main>
+<!-- END: Main Parallax Canvas -->
+<!-- BEGIN: Unlocked Manuscript Chamber Modal (Simulated Library Entry) -->
+<div class="fixed inset-0 z-50 bg-cherry-night/90 backdrop-blur-md hidden items-center justify-center p-4" id="unlockedChamberModal">
+<div class="bg-parchment-50 dark:bg-cherry-deep max-w-3xl w-full rounded-3xl border-4 border-double border-gilded-gold p-8 relative shadow-2xl animate-pulse-glow max-h-[90vh] overflow-y-auto">
+<!-- Close Sanctuary Modal -->
+<button class="btn-spring absolute top-4 right-4 w-9 h-9 rounded-full border border-cherry-maroon dark:border-gilded-gold flex items-center justify-center text-cherry-maroon dark:text-gilded-gold hover:bg-gilded-gold hover:text-cherry-night" onclick="closeChamberModal()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+<!-- Welcome Banner -->
+<div class="text-center space-y-2 mb-6">
+<span class="font-havana text-2xl text-gilded-leaf dark:text-gilded-gold shimmer-havana">Portal Transcended</span>
+<h2 class="font-cinzel text-3xl font-bold text-cherry-deep dark:text-parchment-100">Welcome to the Inner Sanctum</h2>
+<p class="font-bengali text-xl text-cherry-maroon dark:text-gilded-amber">স্বাগতম ভাষা লাইব্রেরির মূল মহাফেজখানায়</p>
+</div>
+<!-- Preview of Unlocked Works -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+<div class="p-5 rounded-2xl border border-cherry-maroon/20 dark:border-gilded-gold/30 bg-parchment-100/60 dark:bg-cherry-night/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-gilded-gold">
+<img alt="Renaissance Manuscript" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-RMuoimRsCpy02-9n2BwZ82io2XI0gLruT7IJjOBi8818_aNizt0rMgqlVUs_vhlemmRbK-nt_lrqfenHZjGfw86Aomq8iLuvcyDzVwZCO2sF7ntCIM8iqhojC4SYl5E8qO9W6ss6x56wDEqJFlV56veagAN6pnPS8AQVtbOZqQla0G9A-E2FDivqpwADnBUB5631QZanQCIbSq0T51oB1Zdw-AHrLtgIpISlZOf1OJUU0Abl7xHH">
+</div>
+<div>
+<h4 class="font-cinzel font-bold text-sm text-cherry-deep dark:text-parchment-100">The Renaissance Folios</h4>
+<p class="font-bengali text-xs text-cherry-maroon dark:text-gilded-amber">অমর কথাসাহিত্য ও পাণ্ডুলিপি</p>
+</div>
+</div>
+<p class="font-playfair text-xs mt-3 italic text-cherry-deep/80 dark:text-parchment-200">Access to 1,200+ digitized hand-bound manuscripts with annotated commentaries.</p>
+</div>
+<div class="p-5 rounded-2xl border border-cherry-maroon/20 dark:border-gilded-gold/30 bg-parchment-100/60 dark:bg-cherry-night/60">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-terracotta">
+<img alt="Pattachitra Folio" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpjJ2ofeLUBnGsc6m-ENmUBS_ODJjEkimEu79nCPypbDkqhP6XcRbjz2QdA-caBDdjOF0Khv-2PbkRlu4oOa2TKUTxCtjwRBJYey68ncnfwh5MTJGSdKNwQoenHANLFc7hoo4YRsO7ERPoRyJV3CnznKSep1h2wB7fKoSAT9cduN00EoUCh6DeiOXdm_J9j9nDNR39CdKH3POEHksY4EjRi8RmBxruJ5gCxxtAj9_YlcQZ-Kv9GLgR">
+</div>
+<div>
+<h4 class="font-cinzel font-bold text-sm text-cherry-deep dark:text-parchment-100">Scribe &amp; Author Guild</h4>
+<p class="font-bengali text-xs text-cherry-maroon dark:text-gilded-amber">লেখক সভা ও পাঠক ফোরাম</p>
+</div>
+</div>
+<p class="font-playfair text-xs mt-3 italic text-cherry-deep/80 dark:text-parchment-200">Interactive salons, live poetry recitations, and literary critiques.</p>
+</div>
+</div>
+<!-- Seal confirmation feedback -->
+<div class="p-4 rounded-xl bg-gilded-gold/15 border border-gilded-gold/40 text-center font-sans text-xs text-cherry-maroon dark:text-gilded-amber">
+<i class="fa-solid fa-stamp mr-1.5 animate-bounce-spring"></i>
+Your credentials have been inscribed in the Great Register. You possess unlimited entry.
+</div>
+<div class="mt-6 flex justify-center">
+<button class="btn-spring px-8 py-3 rounded-full bg-cherry-deep dark:bg-gilded-gold text-parchment-50 dark:text-cherry-deep font-sans text-xs font-bold uppercase tracking-widest shadow-md" onclick="closeChamberModal()">
+Begin Reading Manuscripts
+</button>
+</div>
+</div>
+</div>
+<!-- END: Unlocked Manuscript Chamber Modal -->
+<!-- BEGIN: Footer -->
+<footer class="relative z-10 border-t border-cherry-deep/15 dark:border-gilded-gold/20 py-8 px-6 bg-parchment-100 dark:bg-cherry-night text-center text-xs text-cherry-deep/75 dark:text-parchment-300">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<img alt="Bhasha Seal" class="w-7 h-7 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn5yBvg7UvefSWVYDqnQMk2-l2MN6NFvG-hkaU1NG-Xu2QcmW06cwH_N8kz5-fGXkqfWReLDOctXG3lImfDYDAnm3pX-T_Qx5IdhbXDZFRFUB-nMM97Jr1rFxMgEmF_oBkPtTxkc-UDGK1z6-BNH4W2JJ7l8zrsGFtblsiXfAVmvsnYPDlTPbJ8vrUIkkoWyFz-4pgrQ2GoT7kJnSzNbsSFPesHjzpSGl6v9eSncV-YqP9SJTK1ffG">
+<span class="font-bengali font-bold tracking-normal text-sm">ভাষা</span>
+<span class="font-havana text-base text-gilded-leaf dark:text-gilded-amber shimmer-havana">Library</span>
+<span class="font-bengali">• ভাষা লাইব্রেরি</span>
+</div>
+<div>
+<span class="font-bengali text-sm font-semibold">“গল্প সবার জমবে এবার”</span> — <span class="font-havana text-base shimmer-havana">Sanctuary of Bengali Lore &amp; Continental Enlightenment.</span>
+</div>
+<div class="flex gap-4 tracking-widest uppercase font-sans text-[11px]">
+<a class="btn-spring hover:underline flex items-center gap-1" href="#stage-hero">Ascend to Top <i class="fa-solid fa-arrow-up text-[10px] animate-bounce-spring"></i></a>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+</div>
+<!-- END: Grand Outer Manuscript Canvas Container -->
+<!-- BEGIN: Interactive Theme, Parallax & Auth JavaScript -->
+<script data-purpose="sanctum-interactivity">
+    // Light / Dark Mode Toggle with localStorage memory
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlElement = document.documentElement;
+
+    if (localStorage.getItem('bhasha-theme') === 'dark' || 
+        (!('bhasha-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlElement.classList.add('dark');
+    } else {
+      htmlElement.classList.remove('dark');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('bhasha-theme', 'light');
+      } else {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('bhasha-theme', 'dark');
+      }
+    });
+
+    // Tab Switching for Authentication Portal
+    function switchAuthTab(type) {
+      const signInFields = document.getElementById('signInFields');
+      const signUpFields = document.getElementById('signUpFields');
+      const tabSignInBtn = document.getElementById('tabSignInBtn');
+      const tabSignUpBtn = document.getElementById('tabSignUpBtn');
+      const btnActionText = document.getElementById('btnActionText');
+
+      if (type === 'signin') {
+        signInFields.classList.remove('hidden');
+        signUpFields.classList.add('hidden');
+        
+        tabSignInBtn.classList.add('border-cherry-maroon', 'dark:border-gilded-gold', 'text-cherry-deep', 'dark:text-gilded-gold');
+        tabSignInBtn.classList.remove('border-transparent', 'text-cherry-maroon/50', 'dark:text-parchment-300/50');
+        
+        tabSignUpBtn.classList.add('border-transparent', 'text-cherry-maroon/50', 'dark:text-parchment-300/50');
+        tabSignUpBtn.classList.remove('border-cherry-maroon', 'dark:border-gilded-gold', 'text-cherry-deep', 'dark:text-gilded-gold');
+        
+        btnActionText.textContent = "Enter the Library • প্রবেশ করুন";
+      } else {
+        signUpFields.classList.remove('hidden');
+        signInFields.classList.add('hidden');
+        
+        tabSignUpBtn.classList.add('border-cherry-maroon', 'dark:border-gilded-gold', 'text-cherry-deep', 'dark:text-gilded-gold');
+        tabSignUpBtn.classList.remove('border-transparent', 'text-cherry-maroon/50', 'dark:text-parchment-300/50');
+        
+        tabSignInBtn.classList.add('border-transparent', 'text-cherry-maroon/50', 'dark:text-parchment-300/50');
+        tabSignInBtn.classList.remove('border-cherry-maroon', 'dark:border-gilded-gold', 'text-cherry-deep', 'dark:text-gilded-gold');
+        
+        btnActionText.textContent = "Sign the Guild Charter • নিবন্ধন করুন";
+      }
+    }
+
+    // Auth Submission Simulation
+    function handleAuthSubmit(event) {
+      event.preventDefault();
+      const submitBtn = document.getElementById('submitAuthBtn');
+      const originalHtml = submitBtn.innerHTML;
+      
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Breaking Parchment Seals...';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        submitBtn.innerHTML = originalHtml;
+        submitBtn.disabled = false;
+        
+        document.getElementById('unlockedChamberModal').classList.remove('hidden');
+        document.getElementById('unlockedChamberModal').classList.add('flex');
+      }, 900);
+    }
+
+    function closeChamberModal() {
+      const modal = document.getElementById('unlockedChamberModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function triggerWaxSeal(serviceName) {
+      const modal = document.getElementById('unlockedChamberModal');
+      alert(`Validating wax seal talisman via ${serviceName}... The chamber doors yield.`);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    // Intersection Observer for Smooth Reveal Animations on Scroll
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: "0px 0px -40px 0px"
+    });
+
+    document.querySelectorAll('.reveal-scroll').forEach(el => revealObserver.observe(el));
+
+    // DEEP PARALLAX SCROLL-TELLING CONTROLLER & STICKY DUAL BACKDROP MORPH
+    const heroMedallion = document.getElementById('heroMedallionWrap');
+    const heroFlankLeft = document.getElementById('heroFlankLeft');
+    const heroFlankRight = document.getElementById('heroFlankRight');
+    const heroContent = document.getElementById('heroContent');
+    const heroArchBg = document.getElementById('heroArchBg');
+    const taglineCard = document.getElementById('taglineCard');
+    const sanctumContainer = document.getElementById('sanctumContainer');
+    const specks = document.querySelectorAll('.parallax-speck');
+
+    const dotHero = document.getElementById('dot-hero');
+    const dotTagline = document.getElementById('dot-tagline');
+    const dotSanctum = document.getElementById('dot-sanctum');
+
+    // Sticky Artwork Morpher
+    const bgImgRenaissance = document.getElementById('bgImgRenaissance');
+    const bgImgPattachitra = document.getElementById('bgImgPattachitra');
+
+    const artRenaissance = ["https://lh3.googleusercontent.com/aida-public/AB6AXuC-RMuoimRsCpy02-9n2BwZ82io2XI0gLruT7IJjOBi8818_aNizt0rMgqlVUs_vhlemmRbK-nt_lrqfenHZjGfw86Aomq8iLuvcyDzVwZCO2sF7ntCIM8iqhojC4SYl5E8qO9W6ss6x56wDEqJFlV56veagAN6pnPS8AQVtbOZqQla0G9A-E2FDivqpwADnBUB5631QZanQCIbSq0T51oB1Zdw-AHrLtgIpISlZOf1OJUU0Abl7xHH", "https://lh3.googleusercontent.com/aida-public/AB6AXuA3Id4MeoYE_HDc_GpRmehec5-VC58TS-NDmmGobIbPc9XXqhUhFaf-_fbKwsLjTNk-0tY_HXaY6SYLhiXgZM56IvGaAECFjxlaB3lPKfx5Wftlp24Pa1KlyoxYi044HJ4vH6JmayGCQyte9lVYjGkp-Jce6l8RmJu6gXCCW_oeOeck7JxEkRKXiEshl4lnI_gTEM-TioG2L51migR5dYgSPrXJhcYFAJXYvGpDIKoQqTDsk7tlwbbu"];
+    const artPattachitra = ["https://lh3.googleusercontent.com/aida-public/AB6AXuBpjJ2ofeLUBnGsc6m-ENmUBS_ODJjEkimEu79nCPypbDkqhP6XcRbjz2QdA-caBDdjOF0Khv-2PbkRlu4oOa2TKUTxCtjwRBJYey68ncnfwh5MTJGSdKNwQoenHANLFc7hoo4YRsO7ERPoRyJV3CnznKSep1h2wB7fKoSAT9cduN00EoUCh6DeiOXdm_J9j9nDNR39CdKH3POEHksY4EjRi8RmBxruJ5gCxxtAj9_YlcQZ-Kv9GLgR", "https://lh3.googleusercontent.com/aida-public/AB6AXuDsqcP5xvnNWZy-KG22e2wewXMmpmuSpIQXU3D5Bpwzi2hOQ85ISQvjNDgxOOhvV1On1kNS8wkL6qkm_lRk-m6Fe4fs65rnbOAK-ubMpewWuk33iy6WFvdZgs5gp22TN09No5cAQszzZlIC6nTkqqDKBjYxamQ-RG6cn0pZ12RysCvhCggv-N25Wqcf1y4bBxITA27e9ZoR-Yu6kn4JLIhmcCJy8rQLnDrbyzbZdv-Ej58mljvpg3oo"];
+
+    let currentArtIndex = -1;
+
+    function updateStickyArt(chapterIndex) {
+      if (currentArtIndex !== chapterIndex) {
+        currentArtIndex = chapterIndex;
+        if (bgImgRenaissance && bgImgPattachitra) {
+          const rSrc = artRenaissance[chapterIndex % artRenaissance.length];
+          const pSrc = artPattachitra[chapterIndex % artPattachitra.length];
+          bgImgRenaissance.src = rSrc;
+          bgImgPattachitra.src = pSrc;
+        }
+      }
+    }
+
+    function handleParallax() {
+      const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      const vh = window.innerHeight;
+
+      // 1. Hero Differential Dissolve, Scale & Flanking Parallax
+      if (scrolled < vh * 1.5) {
+        const factor = Math.min(1, scrolled / (vh * 0.9));
+        if (heroMedallion) {
+          heroMedallion.style.transform = `translateY(${scrolled * 0.22}px) scale(${Math.max(0.72, 1 - factor * 0.28)})`;
+          heroMedallion.style.opacity = Math.max(0.15, 1 - factor * 0.95);
+        }
+        if (heroFlankLeft) {
+          heroFlankLeft.style.transform = `translateY(${scrolled * 0.32}px) rotate(${-2 - factor * 8}deg)`;
+          heroFlankLeft.style.opacity = Math.max(0.1, 1 - factor * 1.1);
+        }
+        if (heroFlankRight) {
+          heroFlankRight.style.transform = `translateY(${scrolled * 0.32}px) rotate(${2 + factor * 8}deg)`;
+          heroFlankRight.style.opacity = Math.max(0.1, 1 - factor * 1.1);
+        }
+        if (heroContent) {
+          heroContent.style.transform = `translateY(${scrolled * 0.14}px)`;
+          heroContent.style.opacity = Math.max(0.1, 1 - factor * 0.85);
+        }
+        if (heroArchBg) {
+          heroArchBg.style.transform = `translateY(${scrolled * 0.08}px) scale(${1 + factor * 0.15})`;
+        }
+      }
+
+      // 2. Botanical Lotus & Ink Particles Floating Upward at Variable Speeds
+      specks.forEach(speck => {
+        const speed = parseFloat(speck.getAttribute('data-speed')) || 0.2;
+        speck.style.transform = `translateY(${-scrolled * speed * 0.6}px) rotate(${scrolled * 0.05}deg)`;
+      });
+
+      // 3. Section 2: Inscription Card Unfolding Tilt & Shadow Depth
+      const taglineSection = document.getElementById('stage-tagline');
+      if (taglineSection && taglineCard) {
+        const rect = taglineSection.getBoundingClientRect();
+        const centerOffset = rect.top - (vh * 0.15);
+        if (rect.top < vh && rect.bottom > 0) {
+          const progress = Math.min(1, Math.max(-1, centerOffset / vh));
+          const translateY = progress * 40;
+          const rotateX = progress * 4;
+          const scale = 1 - Math.abs(progress) * 0.04;
+          taglineCard.style.transform = `perspective(1000px) translateY(${translateY}px) rotateX(${rotateX}deg) scale(${scale})`;
+          taglineCard.style.opacity = Math.min(1, 1.2 - Math.abs(progress) * 0.6);
+        }
+      }
+
+      // 4. Section 3: Admission Sanctum Sliding Entrance
+      const sanctumSection = document.getElementById('stage-sanctum');
+      if (sanctumSection && sanctumContainer) {
+        const rect = sanctumSection.getBoundingClientRect();
+        if (rect.top < vh && rect.bottom > 0) {
+          const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.8)));
+          sanctumContainer.style.transform = `translateY(${(1 - progress) * 35}px)`;
+          sanctumContainer.style.opacity = Math.min(1, progress * 1.2);
+        }
+      }
+
+      // 5. Active Chapter Dot Tracker with Sticky Artwork Morph Triggers
+      const heroRect = document.getElementById('stage-hero').getBoundingClientRect();
+      const tagRect = document.getElementById('stage-tagline').getBoundingClientRect();
+      const sanctumRect = document.getElementById('stage-sanctum').getBoundingClientRect();
+
+      [dotHero, dotTagline, dotSanctum].forEach(d => {
+        if (d) d.classList.remove('active');
+      });
+
+      if (sanctumRect.top <= vh * 0.5) {
+        if (dotSanctum) dotSanctum.classList.add('active');
+        updateStickyArt(1);
+      } else if (tagRect.top <= vh * 0.5) {
+        if (dotTagline) dotTagline.classList.add('active');
+        updateStickyArt(0);
+      } else {
+        if (dotHero) dotHero.classList.add('active');
+        updateStickyArt(0);
+      }
+    }
+
+    window.addEventListener('scroll', handleParallax, { passive: true });
+    window.addEventListener('resize', handleParallax);
+    handleParallax();
+  </script>
+<!-- END: Interactive Theme, Parallax & Auth JavaScript -->
+
+
+
+
+</body></html>

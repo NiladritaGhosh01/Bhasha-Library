@@ -1,0 +1,167 @@
+/* Unlocked Manuscript Chamber Modal (Harmonized) */
+
+.chamber-native-dialog {
+  background-color: var(--color-surface-card);
+  max-width: 42rem;
+  width: 90%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  padding: 2.25rem 2rem;
+  position: relative;
+  box-shadow: var(--shadow-modal);
+  max-height: 85vh;
+  overflow-y: auto;
+  color: var(--color-on-surface);
+  margin: auto;
+}
+
+.chamber-modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-on-surface-muted);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.chamber-modal-close-btn:hover {
+  background-color: var(--color-surface-dim);
+  color: var(--color-on-surface);
+}
+
+/* Banner */
+.chamber-welcome-banner {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.chamber-transcended-script {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 600;
+  display: block;
+}
+
+.chamber-welcome-title {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  margin: 0.25rem 0;
+}
+
+.chamber-welcome-bengali {
+  font-family: var(--font-bengali);
+  font-size: 1.125rem;
+  color: var(--color-on-surface-muted);
+  margin: 0;
+}
+
+/* Folio Previews */
+.chamber-folios-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .chamber-folios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.chamber-folio-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--color-surface);
+}
+
+.chamber-folio-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chamber-folio-thumb {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.chamber-folio-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chamber-folio-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.chamber-folio-bengali {
+  font-family: var(--font-bengali);
+  font-size: 0.75rem;
+  color: var(--color-terracotta);
+  margin: 0;
+}
+
+.chamber-folio-desc {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-on-surface-muted);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* Register Feedback */
+.chamber-register-feedback {
+  padding: 0.875rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-dim);
+  border: 1px solid var(--border-subtle);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-on-surface);
+}
+
+.chamber-begin-btn {
+  padding: 0.75rem 2rem;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 1.5rem auto 0;
+  display: block;
+  cursor: pointer;
+  border: 1px solid var(--color-cherry-maroon);
+}
+
+.chamber-begin-btn:hover {
+  background-color: var(--color-cherry-wine);
+  border-color: var(--color-cherry-wine);
+}

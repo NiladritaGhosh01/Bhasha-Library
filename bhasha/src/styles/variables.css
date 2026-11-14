@@ -1,0 +1,94 @@
+/**
+ * DESIGN.md Tokens - Harmonized Literary Palette (Iteration 2 Refinement)
+ * Purpose: Author & Reader Sanctuary (Eliminated yellow slop borders & font fragmentation)
+ */
+
+:root {
+  /* --- Canvas Surfaces (Warm Sunlit Vellum) --- */
+  --color-surface: #FAF5EC;
+  --color-surface-dim: #EFE8DC;
+  --color-surface-bright: #FDFBF7;
+  --color-surface-container: #F4ECE0;
+  --color-surface-card: #FFFFFF;
+  
+  --color-background: #FAF5EC;
+  --color-on-background: #1D1815;
+  --color-on-surface: #1D1815;
+  --color-on-surface-muted: #5E524D;
+
+  /* --- Inks & Accents (Rooted in Historic Printing & Mineral Earth) --- */
+  --color-cherry-deep: #24080F;
+  --color-cherry-maroon: #4A1521;
+  --color-cherry-wine: #5C1D2B;
+  --color-primary-ink: #2F020D;
+
+  --color-terracotta: #B84D28;
+  --color-terracotta-muted: #8E3618;
+  
+  --color-gold-accent: #9E7818;
+  --color-gold-subtle: #C59B27;
+  --color-gold-paper: #F6EDD8;
+
+  /* --- Harmonized Rulings (Subtle Iron-Gall Lines, NOT Loud Yellow) --- */
+  --border-subtle: rgba(74, 21, 33, 0.12);
+  --border-medium: rgba(74, 21, 33, 0.22);
+  --border-focus: #4A1521;
+  --border-accent: rgba(184, 77, 40, 0.4);
+
+  /* --- Cohesive Typographic System --- */
+  --font-display: 'EB Garamond', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-bengali: 'Noto Serif Bengali', 'Tiro Bangla', serif;
+
+  /* --- Spacing Scale --- */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2.5rem;    /* 40px */
+  --space-2xl: 3.5rem;   /* 56px */
+
+  /* --- Structural Deckle Radius --- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;      /* Standard control radius */
+  --radius-md: 6px;      /* Standard card radius */
+  --radius-lg: 8px;      /* Container radius */
+  --radius-full: 9999px; /* Strictly for circular avatars & status dots */
+
+  /* --- Paper Elevations (Physical Layering, No Floating Glows) --- */
+  --shadow-subtle: 0 1px 3px rgba(36, 8, 15, 0.05);
+  --shadow-card: 0 4px 12px -2px rgba(36, 8, 15, 0.06), 0 1px 3px rgba(36, 8, 15, 0.04);
+  --shadow-modal: 0 20px 40px -10px rgba(36, 8, 15, 0.25);
+  --focus-ring: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-cherry-maroon);
+
+  --transition-smooth: all 0.2s ease-out;
+}
+
+/* --- Dark Mode (Nocturne Morocco Leather & Vellum) --- */
+.dark {
+  --color-surface: #19080C;
+  --color-surface-dim: #130508;
+  --color-surface-bright: #240D13;
+  --color-surface-container: #200B10;
+  --color-surface-card: #220C11;
+
+  --color-background: #140407;
+  --color-on-background: #F8F2E8;
+  --color-on-surface: #F8F2E8;
+  --color-on-surface-muted: #C8BAB0;
+
+  --color-cherry-deep: #F8F2E8;
+  --color-cherry-maroon: #E27D5B;
+  --color-cherry-wine: #D4AF37;
+  --color-primary-ink: #FAF4E8;
+
+  --border-subtle: rgba(248, 242, 232, 0.12);
+  --border-medium: rgba(248, 242, 232, 0.22);
+  --border-focus: #D4AF37;
+  --border-accent: rgba(226, 125, 91, 0.4);
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.6);
+  --shadow-modal: 0 20px 40px -10px rgba(0, 0, 0, 0.85);
+  --focus-ring: 0 0 0 2px #19080C, 0 0 0 4px #D4AF37;
+}
