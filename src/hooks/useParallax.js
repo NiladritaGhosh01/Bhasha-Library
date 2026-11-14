@@ -15,7 +15,6 @@ export function useParallax() {
       }
 
       // Clean, reliable section tracking without moving or overlapping DOM elements
-      const heroSection = document.getElementById('stage-hero');
       const tagSection = document.getElementById('stage-tagline');
       const sanctSection = document.getElementById('stage-sanctum');
 

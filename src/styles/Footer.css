@@ -87,3 +87,31 @@
   border-color: var(--border-medium);
   background-color: var(--color-surface-dim);
 }
+
+
+.footer-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+}
+
+.footer-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-on-surface-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: inherit;
+  transition: color 0.15s ease;
+}
+
+.footer-link-btn:hover {
+  color: var(--color-cherry-maroon);
+}
+
+.footer-sep {
+  opacity: 0.4;
+}

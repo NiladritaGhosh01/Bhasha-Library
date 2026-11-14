@@ -1,12 +1,19 @@
 import React from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
 
-export function Navbar({ theme, onToggleTheme }) {
+export function Navbar({ theme, onToggleTheme, currentPage, onNavigate }) {
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate('home');
+    }
+  };
+
   return (
     <header className="navbar-header">
       <div className="navbar-inner">
         {/* Brand Insignia */}
-        <a href="#stage-hero" className="navbar-brand" aria-label="Bhasha Library Home">
+        <a href="#stage-hero" onClick={handleLogoClick} className="navbar-brand" aria-label="Bhasha Library Home">
           <div className="navbar-brand-emblem">
             <img src={ART_ASSETS.bhashaLogo} alt="Bhasha Library Logo" />
           </div>
@@ -21,18 +28,54 @@ export function Navbar({ theme, onToggleTheme }) {
 
         {/* Quick Nav Links */}
         <nav className="navbar-nav" aria-label="Sanctuary Navigation">
-          <a href="#stage-hero" className="nav-link">Sanctuary</a>
-          <a href="#stage-tagline" className="nav-link">The Inscription</a>
-          <a href="#stage-sanctum" className="navbar-portal-btn">
+          <button
+            type="button"
+            className={`nav-link-btn ${currentPage === 'home' ? 'active-link' : ''}`}
+            onClick={() => onNavigate && onNavigate('home')}
+          >
+            Sanctuary Home
+          </button>
+
+          <button
+            type="button"
+            className={`nav-link-btn ${currentPage === 'author-fellowship' ? 'active-link' : ''}`}
+            onClick={() => onNavigate && onNavigate('author-fellowship')}
+          >
+            Author Fellowship
+          </button>
+
+          <button
+            type="button"
+            className={`nav-link-btn ${currentPage === 'reader-sanctuary' ? 'active-link' : ''}`}
+            onClick={() => onNavigate && onNavigate('reader-sanctuary')}
+          >
+            Reader Sanctuary
+          </button>
+
+          {/* Dedicated Portal Login Button */}
+          <button
+            type="button"
+            className={`navbar-portal-btn ${currentPage === 'login' ? 'active-portal' : ''}`}
+            onClick={() => onNavigate && onNavigate('login')}
+          >
+            <i className="fa-solid fa-key" style={{ marginRight: '6px' }}></i>
             Portal Login
-          </a>
+          </button>
         </nav>
 
         {/* Right Actions: Chamber Badge & Theme Toggle */}
         <div className="navbar-actions">
           <div className="navbar-status-badge">
             <span className="navbar-status-dot"></span>
-            <span>Chamber Locked</span>
+            <span>
+              {currentPage === 'author-fellowship'
+                ? 'Author Studio'
+                : currentPage === 'reader-sanctuary'
+                ? 'Reader Archives'
+                : currentPage === 'login'
+                ? 'Admission Chamber'
+                : 'Chamber Unlocked'}
+            </span>
           </div>
           
           <button

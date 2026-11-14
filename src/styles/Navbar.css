@@ -92,7 +92,7 @@
 .navbar-nav {
   display: none;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1.5rem;
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -104,15 +104,39 @@
   }
 }
 
-.navbar-nav a.nav-link {
+.navbar-nav a.nav-link,
+.navbar-nav .nav-link-btn {
   color: var(--color-on-surface-muted);
   text-decoration: none;
+  background: none;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 500;
   padding: 0.25rem 0;
+  cursor: pointer;
+  position: relative;
   transition: color 0.15s ease;
 }
 
-.navbar-nav a.nav-link:hover {
+.navbar-nav a.nav-link:hover,
+.navbar-nav .nav-link-btn:hover {
   color: var(--color-on-surface);
+}
+
+.navbar-nav .nav-link-btn.active-link {
+  color: var(--color-cherry-maroon);
+  font-weight: 600;
+}
+
+.navbar-nav .nav-link-btn.active-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-cherry-maroon);
 }
 
 .navbar-portal-btn {
@@ -127,12 +151,15 @@
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
+  cursor: pointer;
   transition: var(--transition-smooth);
 }
 
-.navbar-portal-btn:hover {
+.navbar-portal-btn:hover,
+.navbar-portal-btn.active-portal {
   border-color: var(--color-cherry-maroon);
-  background-color: var(--color-surface-dim);
+  background-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }
 
 /* Right Actions */

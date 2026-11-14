@@ -1,0 +1,343 @@
+/* ==========================================================================
+   Stage 2: Folio Inscription - Tool Launchers & Kindle Book Preview Carousel
+   ========================================================================== */
+
+/* User Prompt Banner Clarifying Interactive Tool Buttons */
+.fellowship-tool-prompt {
+  margin: 1.5rem auto 1.75rem;
+  max-width: 44rem;
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-medium);
+  border-left: 3px solid var(--color-terracotta);
+  border-radius: var(--radius-sm);
+  text-align: left;
+}
+
+.prompt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  margin-bottom: 0.25rem;
+}
+
+.prompt-text {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-on-surface-muted);
+  margin: 0;
+}
+
+.prompt-text strong {
+  color: var(--color-on-surface);
+  font-weight: 600;
+}
+
+/* Fellowship Tools Grid: Tactile Interactive Tool Cards */
+.fellowship-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 52rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+@media (min-width: 680px) {
+  .fellowship-tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.fellowship-tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  background-color: var(--color-surface-card);
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.fellowship-tool-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-cherry-maroon);
+  box-shadow: var(--shadow-card);
+}
+
+.fellowship-tool-card:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.tool-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.tool-icon-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tool-avatar-img {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  object-fit: cover;
+  background-color: var(--color-surface);
+}
+
+.tool-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-container);
+  color: var(--color-cherry-maroon);
+  border: 1px solid var(--border-subtle);
+}
+
+.tool-indicator-arrow {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-on-surface-muted);
+  font-size: 0.8125rem;
+  transition: var(--transition-smooth);
+}
+
+.fellowship-tool-card:hover .tool-indicator-arrow {
+  border-color: var(--color-cherry-maroon);
+  color: var(--color-cherry-maroon);
+  background-color: var(--color-surface);
+  transform: translate(2px, -2px);
+}
+
+.tool-title-latin {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 0.125rem;
+  line-height: 1.25;
+}
+
+.tool-title-bengali {
+  font-family: var(--font-bengali);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-terracotta);
+  margin: 0 0 0.625rem;
+}
+
+.tool-desc {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-on-surface-muted);
+  margin: 0 0 1.5rem;
+}
+
+.tool-action-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: auto;
+}
+
+.tool-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background-color: var(--color-primary-ink);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-smooth);
+}
+
+.fellowship-tool-card:hover .tool-cta-button {
+  background-color: var(--color-cherry-maroon);
+}
+
+.tool-feature-tag {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-on-surface-muted);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Kindle-Style Moving Book Covers Carousel (Marquee)
+   ========================================================================== */
+
+.book-marquee-container {
+  width: 100%;
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.book-marquee-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding: 0 0.25rem;
+}
+
+.marquee-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--color-terracotta);
+  margin-bottom: 0.25rem;
+}
+
+.marquee-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 0.25rem;
+}
+
+.marquee-subtext {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-muted);
+  margin: 0;
+}
+
+.marquee-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.marquee-control-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-medium);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.marquee-control-btn:hover {
+  background-color: var(--color-surface-bright);
+  border-color: var(--color-cherry-maroon);
+  color: var(--color-cherry-maroon);
+}
+
+/* Carousel Track & Auto-Scroll */
+.book-marquee-track-wrap {
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  padding: 0.75rem 0 1.25rem;
+}
+
+.book-marquee-track-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+
+.book-marquee-track-wrap::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-xs);
+}
+
+.book-marquee-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: marqueeScroll 45s linear infinite;
+}
+
+.book-marquee-track-wrap:hover .book-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-item {
+  flex-shrink: 0;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.marquee-item:hover {
+  transform: translateY(-4px);
+}
+
+.marquee-item-meta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: var(--color-on-surface-muted);
+}
+
+.meta-clicks {
+  color: var(--color-terracotta);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}

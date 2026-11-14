@@ -5,6 +5,10 @@
 @import './styles/BackdropAndMotes.css';
 @import './styles/HeroSection.css';
 @import './styles/TaglineSection.css';
+@import './styles/FellowshipAndMarquee.css';
+@import './styles/CatalogueAndReader.css';
+@import './styles/AuthorStudioAndNotes.css';
+@import './styles/LoginPage.css';
 @import './styles/SanctumSection.css';
 @import './styles/UnlockedChamberModal.css';
 @import './styles/Footer.css';

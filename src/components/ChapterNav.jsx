@@ -2,12 +2,11 @@ import React from 'react';
 
 const CHAPTERS = [
   { id: 'stage-hero', label: 'Sanctuary', num: 'I' },
-  { id: 'stage-tagline', label: 'The Inscription', num: 'II' },
-  { id: 'stage-sanctum', label: 'Admission', num: 'III' }
+  { id: 'stage-tagline', label: 'Folio Inscription', num: 'II' }
 ];
 
-export function ChapterNav({ activeChapter = 'hero' }) {
-  const currentKey = activeChapter === 'hero' ? 'stage-hero' : activeChapter === 'tagline' ? 'stage-tagline' : 'stage-sanctum';
+export function ChapterNav({ activeChapter = 'hero', onNavigate }) {
+  const currentKey = activeChapter === 'hero' ? 'stage-hero' : 'stage-tagline';
 
   return (
     <nav aria-label="Reading Folio Index" className="chapter-nav-tracker">
@@ -29,6 +28,20 @@ export function ChapterNav({ activeChapter = 'hero' }) {
             </li>
           );
         })}
+        {onNavigate && (
+          <li>
+            <button
+              type="button"
+              className="chapter-nav-link"
+              onClick={() => onNavigate('login')}
+              title="Admission Chamber"
+              style={{ background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+            >
+              <span className="chapter-nav-pip"></span>
+              <span className="chapter-nav-title">III. Admission</span>
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );

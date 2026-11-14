@@ -1,7 +1,7 @@
 import React from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
 
-export function HeroSection() {
+export function HeroSection({ onNavigate }) {
   return (
     <section className="hero-section" id="stage-hero" data-purpose="hero-initial-screen">
       <div className="hero-content-wrapper">
@@ -70,6 +70,38 @@ export function HeroSection() {
           <p className="hero-english-subtitle">
             An open sanctuary for independent authors, literary translators, and archival readers.
           </p>
+
+          {/* Direct Sanctuary Gateways */}
+          {onNavigate && (
+            <div className="hero-gateways-row">
+              <button
+                type="button"
+                className="btn-spring hero-gateway-btn author-btn"
+                onClick={() => onNavigate('author-fellowship')}
+              >
+                <i className="fa-solid fa-feather-pointed"></i>
+                <span>Author Studio (লেখকদের আড্ডা)</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-spring hero-gateway-btn reader-btn"
+                onClick={() => onNavigate('reader-sanctuary')}
+              >
+                <i className="fa-solid fa-book-bookmark"></i>
+                <span>Reader Sanctuary (অনাবিল পাঠাগার)</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-spring hero-gateway-btn login-btn"
+                onClick={() => onNavigate('login')}
+              >
+                <i className="fa-solid fa-key"></i>
+                <span>Admission Login</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
