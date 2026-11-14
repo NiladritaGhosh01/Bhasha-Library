@@ -1,0 +1,35 @@
+[33mcommit 61a223376680662ce849805d0d6fd859c55f2d0b[m[33m ([m[1;32mmain[m[33m)[m
+Author: abhirupnag396-ui <abhirupnag396@gmail.com>
+Date:   Sat Nov 14 17:36:53 2026 +0530
+
+    backend
+
+ eslint.config.js                        |   10 [32m+[m
+ src/App.jsx                             |  122 [32m+++[m[31m-[m
+ src/components/BookCatalogueBrowser.jsx |  244 [32m+++++++[m
+ src/components/BookCoverCard.jsx        |   66 [32m++[m
+ src/components/BookCoverMarquee.jsx     |   90 [32m+++[m
+ src/components/BookReader.jsx           |  413 [32m+++++++++++[m
+ src/components/ChapterNav.jsx           |   21 [32m+[m[31m-[m
+ src/components/FloatingNotesWidget.jsx  |  251 [32m+++++++[m
+ src/components/Footer.jsx               |   23 [32m+[m[31m-[m
+ src/components/HeroSection.jsx          |   34 [32m+[m[31m-[m
+ src/components/LLMAgentChat.jsx         |  308 [32m++++++++[m
+ src/components/Navbar.jsx               |   57 [32m+[m[31m-[m
+ src/components/TaglineSection.jsx       |  127 [32m+++[m[31m-[m
+ src/hooks/useParallax.js                |    1 [31m-[m
+ src/index.css                           |    4 [32m+[m
+ src/pages/AuthorFellowshipPage.jsx      |  323 [32m+++++++++[m
+ src/pages/LoginPage.jsx                 |  354 [32m++++++++++[m
+ src/pages/ReaderSanctuaryPage.jsx       |  194 [32m+++++[m
+ src/services/bookService.js             |  494 [32m+++++++++++++[m
+ src/services/firebaseConfig.js          |   28 [32m+[m
+ src/services/llmService.js              |  183 [32m+++++[m
+ src/styles/AuthorStudioAndNotes.css     |  724 [32m+++++++++++++++++++[m
+ src/styles/CatalogueAndReader.css       | 1170 [32m+++++++++++++++++++++++++++++++[m
+ src/styles/FellowshipAndMarquee.css     |  343 [32m+++++++++[m
+ src/styles/Footer.css                   |   28 [32m+[m
+ src/styles/HeroSection.css              |   57 [32m++[m
+ src/styles/LoginPage.css                |  259 [32m+++++++[m
+ src/styles/Navbar.css                   |   37 [32m+[m[31m-[m
+ 28 files changed, 5895 insertions(+), 70 deletions(-)
