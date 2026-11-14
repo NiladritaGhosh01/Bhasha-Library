@@ -500,11 +500,23 @@
   background-color: var(--color-cherry-maroon);
   color: #FFFFFF;
   border-radius: var(--radius-sm);
-  border: none;
+  border: 1px solid transparent;
+}
+
+.dark .card-read-btn {
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-color: var(--border-accent);
 }
 
 .card-read-btn:hover {
   background-color: var(--color-primary-ink);
+}
+
+.dark .card-read-btn:hover {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }
 
 .card-isbn {
@@ -539,6 +551,11 @@
   font-weight: 600;
   font-size: 0.875rem;
   border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.dark .catalogue-reset-large {
+  border-color: var(--border-accent);
 }
 
 /* ==========================================================================
@@ -970,9 +987,19 @@
   color: #FFFFFF;
 }
 
+.dark .tts-btn.play-btn {
+  border-color: var(--border-accent);
+}
+
 .tts-btn.pause-btn {
   background-color: var(--color-gold-accent);
   color: #FFFFFF;
+}
+
+.dark .tts-btn.pause-btn {
+  background-color: #8A6513;
+  color: #FFFFFF;
+  border-color: var(--border-medium);
 }
 
 .tts-btn.stop-btn {

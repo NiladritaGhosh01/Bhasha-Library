@@ -77,10 +77,11 @@
   --color-on-surface: #F8F2E8;
   --color-on-surface-muted: #C8BAB0;
 
-  --color-cherry-deep: #F8F2E8;
+  --color-cherry-deep: #2A0B13;
   --color-cherry-maroon: #E27D5B;
   --color-cherry-wine: #D4AF37;
-  --color-primary-ink: #FAF4E8;
+  /* Deep noble maroon button background — eliminates blinding white glare & delivers 14:1+ AAA contrast */
+  --color-primary-ink: #541825;
 
   --border-subtle: rgba(248, 242, 232, 0.12);
   --border-medium: rgba(248, 242, 232, 0.22);

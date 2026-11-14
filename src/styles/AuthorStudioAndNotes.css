@@ -53,6 +53,10 @@
   color: #FFFFFF;
 }
 
+.dark .split-preset-btn.active {
+  border: 1px solid var(--border-accent);
+}
+
 /* Split Workspace */
 .author-split-workspace {
   flex: 1;
@@ -424,11 +428,23 @@
   background-color: var(--color-cherry-maroon);
   color: #FFFFFF;
   border-radius: var(--radius-xs);
-  border: none;
+  border: 1px solid transparent;
+}
+
+.dark .citation-open-btn {
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-color: var(--border-accent);
 }
 
 .citation-open-btn:hover {
   background-color: var(--color-primary-ink);
+}
+
+.dark .citation-open-btn:hover {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }
 
 /* Thinking Indicator */
@@ -498,12 +514,26 @@
   border-radius: var(--radius-sm);
   background-color: var(--color-primary-ink);
   color: #FFFFFF;
-  border: none;
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  transition: var(--transition-smooth);
+}
+
+.dark .composer-send-btn {
+  border-color: var(--border-accent);
+}
+
+.composer-send-btn:hover:not(:disabled) {
+  background-color: var(--color-cherry-maroon);
+}
+
+.dark .composer-send-btn:hover:not(:disabled) {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
 }
 
 .composer-send-btn:disabled {
@@ -546,10 +576,20 @@
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.dark .floating-notes-circular-btn {
+  background-color: var(--color-primary-ink);
+  border-color: var(--border-accent);
+}
+
 .floating-notes-circular-btn:hover {
   transform: scale(1.08) translateY(-2px);
   background-color: var(--color-primary-ink);
   box-shadow: 0 6px 20px rgba(47, 2, 13, 0.4);
+}
+
+.dark .floating-notes-circular-btn:hover {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
 }
 
 .floating-notes-circular-btn.active-open {
@@ -716,9 +756,20 @@
   background-color: var(--color-primary-ink);
   color: #FFFFFF;
   border-radius: var(--radius-xs);
-  border: none;
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.dark .notes-download-btn {
+  border-color: var(--border-accent);
 }
 
 .notes-download-btn:hover {
   background-color: var(--color-cherry-maroon);
+}
+
+.dark .notes-download-btn:hover {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }

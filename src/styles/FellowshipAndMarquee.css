@@ -187,11 +187,24 @@
   background-color: var(--color-primary-ink);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-sm);
+  border: 1px solid transparent;
   transition: var(--transition-smooth);
+}
+
+.dark .tool-cta-button {
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-color: var(--border-accent);
 }
 
 .fellowship-tool-card:hover .tool-cta-button {
   background-color: var(--color-cherry-maroon);
+}
+
+.dark .fellowship-tool-card:hover .tool-cta-button {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }
 
 .tool-feature-tag {

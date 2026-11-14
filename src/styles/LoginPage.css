@@ -211,13 +211,25 @@
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
   transition: var(--transition-smooth);
 }
 
+.dark .login-submit-btn {
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-color: var(--border-accent);
+}
+
 .login-submit-btn:hover {
   background-color: var(--color-cherry-maroon);
+}
+
+.dark .login-submit-btn:hover {
+  background-color: #6E1F31;
+  border-color: var(--color-cherry-maroon);
+  color: #FFFFFF;
 }
 
 .login-card-footer {
