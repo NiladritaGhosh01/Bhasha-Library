@@ -72,7 +72,7 @@ const handleFederatedSeal = async (provider) => {
     if (key === 'apple') {
       setStatusMessage({
         type: 'error',
-        text: 'Apple login requires a developer account. Please use Google or Linkdin.'
+        text: 'Apple login requires a developer account. Please use Google or Linkedin.'
       });
       return;
     }
@@ -82,7 +82,11 @@ const handleFederatedSeal = async (provider) => {
       text: `Redirecting to ${provider}...`
     });
 
-    const oauthProvider = key === 'linkdin' ? 'linkdin_oidc' : key;
+    const oauthProvider = key.includes('linkedin')
+  ? 'linkedin_oidc'
+  : key.includes('google')
+  ? 'google'
+  : key;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: oauthProvider,
       options: {
@@ -359,12 +363,12 @@ const handleFederatedSeal = async (provider) => {
                 </button>
               <button
           type="button"
-          title="Inscribe with Linkdin"
+          title="Inscribe with Linkedin"
           className="btn-spring wax-seal-btn"
-          onClick={() => handleFederatedSeal('Linkdin')}
+          onClick={() => handleFederatedSeal('Linkedin')}
         >
-          <i className="fa-brands fa-linkdin" aria-hidden="true"></i>
-          <span>Linkdin</span>
+          <i className="fa-brands fa-linkedin" aria-hidden="true"></i>
+          <span>Linkedin</span>
         </button>
         </div>
             </div>
