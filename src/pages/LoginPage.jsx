@@ -16,12 +16,40 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMessage(null);
 
     setTimeout(() => {
+      const users = JSON.parse(localStorage.getItem('bhasha_users') || '[]');
+
+      if (activeTab === 'signin') {
+        const validUser = users.find(
+          (u) => u.email === signinEmail && u.password === signinPassword
+        );
+
+        if (!validUser) {
+          setIsSubmitting(false);
+          setStatusMessage({
+            type: 'error',
+            text: 'Invalid email or password. Please register first or try again.'
+          });
+          return;
+        }
+      } else {
+        if (regPassword.length < 6) {
+          setIsSubmitting(false);
+          setStatusMessage({
+            type: 'error',
+            text: 'Password must be at least 6 characters.'
+          });
+          return;
+        }
+        users.push({ name: regName, email: regEmail, password: regPassword, role: selectedRole });
+        localStorage.setItem('bhasha_users', JSON.stringify(users));
+      }
+
       setIsSubmitting(false);
       setStatusMessage({
         type: 'success',
@@ -38,16 +66,6 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
         }
       }, 700);
     }, 700);
-  };
-
-  const handleFederatedSeal = (provider) => {
-    setStatusMessage({
-      type: 'success',
-      text: `Authenticating with ${provider}... Chamber unlocked.`
-    });
-    setTimeout(() => {
-      onNavigate('reader-sanctuary');
-    }, 600);
   };
 
   return (
@@ -104,15 +122,6 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
             >
               Sign In (প্রবেশ)
             </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'signup'}
-              className={`login-tab-btn ${activeTab === 'signup' ? 'active' : ''}`}
-              onClick={() => setActiveTab('signup')}
-            >
-              Join Guild (নিবন্ধন)
-            </button>
           </div>
 
           {/* Form */}
@@ -121,7 +130,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
               <>
                 <div className="form-group">
                   <label className="form-label" htmlFor="pageSigninEmail">
-                    Pen Name or Manuscript Email
+                    Email Address
                   </label>
                   <input
                     id="pageSigninEmail"
@@ -131,7 +140,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
                     required
                     value={signinEmail}
                     onChange={(e) => setSigninEmail(e.target.value)}
-                    placeholder="poet@bhashalibrary.org or রবীন্দ্রনাথ"
+                    placeholder="Enter your email address"
                     className="form-input"
                   />
                 </div>
@@ -139,14 +148,14 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
                 <div className="form-group">
                   <div className="form-label-row">
                     <label className="form-label" htmlFor="pageSigninPassword">
-                      Secret Cipher (পাসওয়ার্ড)
+                      Password (পাসওয়ার্ড)
                     </label>
                     <button
                       type="button"
-                      onClick={() => alert('A royal messenger owl will send your cipher reset talisman.')}
+                      onClick={() => alert('A royal messenger owl will send your password reset talisman.')}
                       className="forgot-cipher-link"
                     >
-                      Forgotten cipher?
+                      Forgot Password?
                     </button>
                   </div>
                   <input
@@ -319,16 +328,16 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
                   <i className="fa-brands fa-apple" aria-hidden="true"></i>
                   <span>Apple</span>
                 </button>
-                <button
-                  type="button"
-                  title="Inscribe with Literary Guild"
-                  className="btn-spring wax-seal-btn"
-                  onClick={() => handleFederatedSeal('Bengal Literary Guild')}
-                >
-                  <i className="fa-solid fa-feather-pointed" aria-hidden="true"></i>
-                  <span>Guild</span>
-                </button>
-              </div>
+              <button
+          type="button"
+          title="Inscribe with LinkedIn"
+          className="btn-spring wax-seal-btn"
+          onClick={() => handleFederatedSeal('LinkedIn')}
+        >
+          <i className="fa-brands fa-linkedin" aria-hidden="true"></i>
+          <span>LinkedIn</span>
+        </button>
+        </div>
             </div>
           </form>
 
