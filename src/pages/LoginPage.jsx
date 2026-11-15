@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
-
+import { supabase } from '../services/supabaseClient';
 export function LoginPage({ onNavigate, onLoginSuccess }) {
   const [activeTab, setActiveTab] = useState('signin');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,7 +67,36 @@ const handleSubmit = (e) => {
       }, 700);
     }, 700);
   };
+const handleFederatedSeal = async (provider) => {
+    const key = provider.toLowerCase();
+    if (key === 'apple') {
+      setStatusMessage({
+        type: 'error',
+        text: 'Apple login requires a developer account. Please use Google or LinkedIn.'
+      });
+      return;
+    }
 
+    setStatusMessage({
+      type: 'success',
+      text: `Redirecting to ${provider}...`
+    });
+
+    const oauthProvider = key === 'linkedin' ? 'linkedin_oidc' : key;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: oauthProvider,
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) {
+      setStatusMessage({
+        type: 'error',
+        text: error.message
+      });
+    }
+  };
   return (
     <div className="login-page-wrapper">
       {/* Background Ambience */}
