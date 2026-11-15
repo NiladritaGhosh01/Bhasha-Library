@@ -1,6 +1,8 @@
-# Logs
+# Logs & Firebase Debug
 logs
 *.log
+firebase-debug.log*
+.firebase/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

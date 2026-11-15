@@ -1,13 +1,18 @@
 import React from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
+import { useAuth } from '../hooks/useAuth';
 
 export function Navbar({ theme, onToggleTheme, currentPage, onNavigate }) {
+  const { currentUser, logout } = useAuth();
+
   const handleLogoClick = (e) => {
     e.preventDefault();
     if (onNavigate) {
       onNavigate('home');
     }
   };
+
+  const displayName = currentUser?.displayName || currentUser?.email?.split('@')[0];
 
   return (
     <header className="navbar-header">
@@ -52,15 +57,42 @@ export function Navbar({ theme, onToggleTheme, currentPage, onNavigate }) {
             Reader Sanctuary
           </button>
 
-          {/* Dedicated Portal Login Button */}
-          <button
-            type="button"
-            className={`navbar-portal-btn ${currentPage === 'login' ? 'active-portal' : ''}`}
-            onClick={() => onNavigate && onNavigate('login')}
-          >
-            <i className="fa-solid fa-key" style={{ marginRight: '6px' }}></i>
-            Portal Login
-          </button>
+          {/* Dedicated Portal Login / User State */}
+          {currentUser ? (
+            <div className="navbar-user-chip" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span className="navbar-portal-btn active-portal" title={currentUser.email}>
+                <i className="fa-solid fa-user-feather" style={{ marginRight: '6px' }}></i>
+                {displayName}
+              </span>
+              <button
+                type="button"
+                className="btn-spring"
+                onClick={logout}
+                title="Sign out of Firebase"
+                style={{
+                  background: 'none',
+                  border: '1px solid var(--border-medium)',
+                  padding: '0.35rem 0.65rem',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--color-on-surface-muted)',
+                  fontSize: '0.75rem',
+                  fontFamily: 'var(--font-display)',
+                  cursor: 'pointer'
+                }}
+              >
+                <i className="fa-solid fa-arrow-right-from-bracket"></i>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={`navbar-portal-btn ${currentPage === 'login' ? 'active-portal' : ''}`}
+              onClick={() => onNavigate && onNavigate('login')}
+            >
+              <i className="fa-solid fa-key" style={{ marginRight: '6px' }}></i>
+              Portal Login
+            </button>
+          )}
         </nav>
 
         {/* Right Actions: Chamber Badge & Theme Toggle */}

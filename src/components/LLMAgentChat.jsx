@@ -2,13 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { llmService, AVAILABLE_MODELS } from '../services/llmService';
 
 export function LLMAgentChat({ openBook, onOpenCitation }) {
-  const [selectedModelId, setSelectedModelId] = useState('gemini-2.5-pro');
   const [messages, setMessages] = useState([
     {
       id: 'welcome-1',
       sender: 'agent',
-      modelName: 'Gemini 2.5 Pro',
-      text: `Greetings, author. I am your literary research co-scribe.
+      modelName: 'Gemini 3.8 Flash',
+      text: `Greetings, author. I am your literary research co-scribe powered by Google Gemini 3.8 Flash.
 
 I have complete awareness of the **Bhasha Library manuscript archives**—including full texts, chapters, and thematic motifs across Tagore, Bibhutibhushan, Sarat Chandra, Bankim, and Jibanananda.
 
@@ -30,7 +29,7 @@ Ask me for assistance with your plot structure, sensory prose, dialect, or philo
   const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const selectedModel = AVAILABLE_MODELS.find(m => m.id === selectedModelId) || AVAILABLE_MODELS[0];
+  const selectedModel = AVAILABLE_MODELS[0];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -58,7 +57,7 @@ Ask me for assistance with your plot structure, sensory prose, dialect, or philo
     try {
       const response = await llmService.generateResponse({
         message: text,
-        modelId: selectedModelId,
+        modelId: selectedModel.id,
         openBook: openBook,
         conversationHistory: messages
       });
@@ -128,23 +127,12 @@ Ask me for assistance with your plot structure, sensory prose, dialect, or philo
           </button>
         </div>
 
-        {/* Model Selector Bar */}
+        {/* Model Indicator */}
         <div className="llm-model-bar">
-          <label htmlFor="modelSelector" className="model-label">
-            <i className="fa-solid fa-microchip"></i> Model:
-          </label>
-          <select
-            id="modelSelector"
-            className="llm-model-select"
-            value={selectedModelId}
-            onChange={(e) => setSelectedModelId(e.target.value)}
-          >
-            {AVAILABLE_MODELS.map(model => (
-              <option key={model.id} value={model.id}>
-                {model.name} — {model.provider}
-              </option>
-            ))}
-          </select>
+          <span className="model-label">
+            <i className="fa-solid fa-sparkles"></i> Model:
+          </span>
+          <span className="model-active-name">Gemini 3.8 Flash (Google AI)</span>
           <span className="model-badge">{selectedModel.badge}</span>
         </div>
       </header>
