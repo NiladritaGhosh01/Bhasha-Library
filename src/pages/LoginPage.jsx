@@ -68,7 +68,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
 
         setStatusMessage({
           type: 'success',
-          text: 'Guild charter inscribed in Firebase. Welcome to the fellowship!'
+          text: 'Guild charter inscribed. Welcome to the fellowship!'
         });
 
         setTimeout(() => {
@@ -130,7 +130,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
         if (err.code !== 'auth/popup-closed-by-user') {
           let errorMsg = err.message || 'Google authentication was not completed.';
           if (err.code === 'auth/unauthorized-domain') {
-            errorMsg = 'This domain is not yet authorized in Firebase Console (Authentication > Settings > Authorized Domains).';
+            errorMsg = 'This domain is not authorized for sign-in. Please check your domain authorization settings.';
           }
           setStatusMessage({ type: 'error', text: errorMsg });
         } else {
@@ -142,7 +142,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
     } else {
       setStatusMessage({
         type: 'error',
-        text: `${provider} requires OAuth provider configuration in Firebase Console. Please use Google or Email/Password.`
+        text: `${provider} sign-in is not configured. Please use Google or Email/Password.`
       });
     }
   };
@@ -232,7 +232,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
                   }}
                 >
                   <i className="fa-solid fa-arrow-right-from-bracket" style={{ marginRight: '6px' }}></i>
-                  Sign Out of Firebase
+                  Sign Out of Sanctuary • প্রস্থান করুন
                 </button>
               </div>
             </div>

@@ -3,6 +3,7 @@ import { BookCatalogueBrowser } from '../components/BookCatalogueBrowser';
 import { BookReader } from '../components/BookReader';
 import { LLMAgentChat } from '../components/LLMAgentChat';
 import { FloatingNotesWidget } from '../components/FloatingNotesWidget';
+import { AddManuscriptModal } from '../components/AddManuscriptModal';
 import { bookService } from '../services/bookService';
 
 export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
@@ -16,6 +17,7 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
     }
   ]);
   const [activeTabId, setActiveTabId] = useState('author-tab-1');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Split-pane divider position (percentage for left pane)
   const [splitPercent, setSplitPercent] = useState(54);
@@ -145,6 +147,11 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
     }
   };
 
+  const handleManuscriptAdded = (newManuscript) => {
+    // Automatically switch active tab to view the newly inscribed folio
+    handleSelectBookInTab(newManuscript, 1);
+  };
+
   return (
     <div className="author-page-container">
       {/* Top Author Studio Nav */}
@@ -198,6 +205,16 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
         </div>
 
         <div className="author-nav-right">
+          <button
+            type="button"
+            className="btn-spring author-publish-top-btn"
+            onClick={() => setIsAddModalOpen(true)}
+            title="Publish a new manuscript to the library vault"
+          >
+            <i className="fa-solid fa-cloud-arrow-up"></i>
+            <span>Publish Manuscript</span>
+          </button>
+
           <button
             type="button"
             className="btn-spring author-switch-chamber-btn"
@@ -281,6 +298,7 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
                 title="Author Research Vault"
                 subtitle="Select any manuscript to read side-by-side with your LLM research scribe"
                 onSelectBook={(book) => handleSelectBookInTab(book, 1)}
+                onOpenAddModal={() => setIsAddModalOpen(true)}
               />
             )}
           </div>
@@ -312,12 +330,20 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
           <LLMAgentChat
             openBook={activeTab.book}
             onOpenCitation={handleOpenCitationInReader}
+            onNavigate={onNavigate}
           />
         </section>
       </div>
 
       {/* Floating Bottom-Left Draggable Notes Widget */}
       <FloatingNotesWidget />
+
+      {/* Add Manuscript Modal */}
+      <AddManuscriptModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onManuscriptAdded={handleManuscriptAdded}
+      />
     </div>
   );
 }

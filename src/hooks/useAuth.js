@@ -17,9 +17,15 @@ export function useAuth() {
     try {
       await signOut(auth);
     } catch (error) {
-      console.error('Firebase sign out error:', error);
+      console.error('Sign out error:', error);
     }
   };
 
-  return { currentUser, loading, logout };
+  return { 
+    currentUser, 
+    user: currentUser, 
+    isAuthenticated: Boolean(currentUser), 
+    loading, 
+    logout 
+  };
 }

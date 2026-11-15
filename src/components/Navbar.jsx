@@ -68,7 +68,8 @@ export function Navbar({ theme, onToggleTheme, currentPage, onNavigate }) {
                 type="button"
                 className="btn-spring"
                 onClick={logout}
-                title="Sign out of Firebase"
+                title="Sign Out of Sanctuary • প্রস্থান"
+                aria-label="Sign Out of Sanctuary"
                 style={{
                   background: 'none',
                   border: '1px solid var(--border-medium)',

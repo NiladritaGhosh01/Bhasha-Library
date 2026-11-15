@@ -21,6 +21,52 @@ export const AVAILABLE_MODELS = [
   }
 ];
 
+/**
+ * Builds valid alternating conversation turns for Google Gemini generateContent API
+ * Strict requirements:
+ * 1. First message must be role 'user'
+ * 2. Strict alternation: user -> model -> user -> model
+ * 3. Consecutive turns with same role must be merged
+ */
+function buildGeminiContents(history, currentMessage) {
+  const turns = [];
+
+  // Filter and process prior history
+  const cleanHistory = (history || []).filter(item => item && item.text && item.text.trim());
+
+  for (const item of cleanHistory) {
+    const role = item.sender === 'user' ? 'user' : 'model';
+
+    // Gemini API requires the first turn to have role 'user'
+    // Skip any introductory agent greeting messages at the start of conversation
+    if (turns.length === 0 && role === 'model') {
+      continue;
+    }
+
+    if (turns.length > 0 && turns[turns.length - 1].role === role) {
+      // Merge consecutive turns from the same sender
+      turns[turns.length - 1].parts[0].text += `\n\n${item.text.trim()}`;
+    } else {
+      turns.push({
+        role,
+        parts: [{ text: item.text.trim() }]
+      });
+    }
+  }
+
+  // Append current user message
+  if (turns.length > 0 && turns[turns.length - 1].role === 'user') {
+    turns[turns.length - 1].parts[0].text += `\n\n${currentMessage.trim()}`;
+  } else {
+    turns.push({
+      role: 'user',
+      parts: [{ text: currentMessage.trim() }]
+    });
+  }
+
+  return turns;
+}
+
 export const llmService = {
   getAvailableModels() {
     return AVAILABLE_MODELS;
@@ -28,21 +74,21 @@ export const llmService = {
 
   /**
    * Generates a context-aware literary response aware of the stored books
-   * Calls live Google Gemini 3.8 Flash with fallback to archival synthesis
+   * Calls live Google Gemini 3.8 Flash with full turn-alternation and systemInstruction
    */
   async generateResponse({ message, openBook = null, conversationHistory = [] }) {
     const allBooks = bookService.getAllBooks();
     const cleanMsg = (message || '').toLowerCase();
 
-    // 1. Semantic book & excerpt retrieval from database
+    // 1. Semantic manuscript and excerpt matching from the archival database
     const matches = [];
 
     allBooks.forEach(book => {
       let score = 0;
-      const titleLower = book.name.toLowerCase();
-      const authorLower = book.author.toLowerCase();
-      const summaryLower = book.summary.toLowerCase();
-      const genreLower = book.genre.toLowerCase();
+      const titleLower = (book.name || '').toLowerCase();
+      const authorLower = (book.author || '').toLowerCase();
+      const summaryLower = (book.summary || '').toLowerCase();
+      const genreLower = (book.genre || '').toLowerCase();
 
       if (cleanMsg.includes('gitanjali') || cleanMsg.includes('tagore') || cleanMsg.includes('গীতাঞ্জলি')) {
         if (book.id === 'gitanjali-1910' || book.id === 'sesher-kobita-1929') score += 5;
@@ -92,127 +138,113 @@ export const llmService = {
       recommendedBooks = allBooks.slice(0, 2);
     }
 
-    // Build citations
+    // Build citations for side-by-side reading in the chamber
     const citations = [];
     recommendedBooks.forEach(book => {
-      const page = book.pagesData[0];
+      const page = Array.isArray(book.pagesData) && book.pagesData[0];
       if (page) {
         citations.push({
           bookId: book.id,
           bookName: book.name,
           author: book.author,
-          pageNumber: page.pageNumber,
-          pageTitle: page.title,
-          excerpt: page.paragraphs[0],
-          quote: page.paragraphs[0].slice(0, 160) + '...'
+          pageNumber: page.pageNumber || 1,
+          pageTitle: page.title || 'Folio I',
+          excerpt: page.paragraphs?.[0] || book.summary || '',
+          quote: (page.paragraphs?.[0] || book.summary || '').slice(0, 160) + '...'
         });
       }
     });
 
     const primaryRec = citations[0];
-    const secondaryRec = citations[1];
 
-    // 2. Attempt Live Gemini API Call
+    // 2. Live Google Gemini 3.8 Flash API Execution
     if (GEMINI_API_KEY) {
-      try {
-        const systemInstruction = 
-          `You are the dedicated Literary Co-Scribe for the Bhasha Library Author Fellowship, powered by Gemini 3.8 Flash.\n` +
-          `Your role is to assist authors, translators, and scholars with deep appreciation for Bengali and comparative world literature.\n` +
-          `Our archival database currently features titles such as Rabindranath Tagore's Gitanjali and Sesher Kobita, Bibhutibhushan Bandyopadhyay's Pather Panchali and Aranyak, Sarat Chandra Chattopadhyay's Devdas, Bankim Chandra Chattopadhyay's Anandamath, and Jibanananda Das's Rupashi Bangla.\n` +
-          `Ground your advice in literary craft, sensory imagery, acoustic cadence, character depth, and thematic resonance.\n` +
-          (primaryRec ? `Relevant manuscript context from our archives:\n- Book: "${primaryRec.bookName}" by ${primaryRec.author}\n- Folio Excerpt: "${primaryRec.excerpt}"\n` : '');
+      const systemInstructionText = 
+        `You are the dedicated Literary Co-Scribe for the Bhasha Library Author Fellowship, powered by Google Gemini 3.8 Flash.\n` +
+        `Your mission is to assist authors, translators, and scholars with deep appreciation for Bengali and comparative world literature.\n` +
+        `Our library archival vault preserves classical masterworks: Rabindranath Tagore's Gitanjali and Sesher Kobita, Bibhutibhushan Bandyopadhyay's Pather Panchali and Aranyak, Sarat Chandra Chattopadhyay's Devdas and Srikanta, Bankim Chandra Chattopadhyay's Anandamath and Kapalkundala, and Jibanananda Das's Rupashi Bangla.\n` +
+        `Ground your advice in literary craft, sensory imagery, acoustic cadence, character depth, and thematic resonance.\n` +
+        (primaryRec ? `Relevant manuscript context from our archives:\n- Title: "${primaryRec.bookName}" by ${primaryRec.author}\n- Folio Excerpt (Page ${primaryRec.pageNumber}): "${primaryRec.excerpt}"\n` : '') +
+        `Always provide thoughtful, personalized, and insightful answers to the author's question.`;
 
-        // Build conversation messages for Gemini
-        const contents = [];
-        
-        // Add past turns for context (up to last 6 messages)
-        const recentHistory = conversationHistory.slice(-6);
-        recentHistory.forEach(item => {
-          if (item.sender === 'user' && item.text) {
-            contents.push({ role: 'user', parts: [{ text: item.text }] });
-          } else if (item.sender === 'agent' && item.text) {
-            contents.push({ role: 'model', parts: [{ text: item.text }] });
+      const contents = buildGeminiContents(conversationHistory, message);
+
+      const requestPayload = {
+        systemInstruction: {
+          parts: [{ text: systemInstructionText }]
+        },
+        contents: contents,
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2048
+        }
+      };
+
+      // Handle transient high demand (503) or rate limits with automatic retry
+      let response;
+      let lastError = null;
+
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(requestPayload)
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (generatedText) {
+              return {
+                id: `msg-${Date.now()}`,
+                sender: 'agent',
+                modelId: GEMINI_MODEL,
+                modelName: 'Gemini 3.8 Flash',
+                text: generatedText,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                citations: citations
+              };
+            }
+          } else {
+            const errorBody = await response.json().catch(() => ({}));
+            const errorMsg = errorBody?.error?.message || `HTTP ${response.status} ${response.statusText}`;
+            lastError = new Error(errorMsg);
+            console.warn(`[Gemini API Attempt ${attempt}]:`, errorMsg);
+
+            // If 503 high demand or 429, wait and retry once
+            if ((response.status === 503 || response.status === 429) && attempt < 2) {
+              await new Promise(r => setTimeout(r, 1200));
+              continue;
+            }
           }
-        });
-
-        // Add current user prompt
-        contents.push({
-          role: 'user',
-          parts: [{ text: `${systemInstruction}\n\nUser Question: ${message}` }]
-        });
-
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              contents: contents,
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 1500
-              }
-            })
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (generatedText) {
-            return {
-              id: `msg-${Date.now()}`,
-              sender: 'agent',
-              modelId: GEMINI_MODEL,
-              modelName: 'Gemini 3.8 Flash',
-              text: generatedText,
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              citations: citations
-            };
+        } catch (fetchErr) {
+          lastError = fetchErr;
+          console.warn(`[Gemini API Network Attempt ${attempt}]:`, fetchErr.message);
+          if (attempt < 2) {
+            await new Promise(r => setTimeout(r, 1000));
           }
         }
-      } catch (err) {
-        console.warn('[Gemini API] Live call failed, using archival co-scribe synthesis:', err);
+      }
+
+      // If the API failed after retries, throw informative error so the UI can notify the author
+      if (lastError) {
+        throw new Error(`Gemini 3.8 Flash Service Notice: ${lastError.message}`);
       }
     }
 
-    // 3. Fallback Synthesizer if offline or network error
-    await new Promise(resolve => setTimeout(resolve, 400));
-
-    let reply;
-    if (cleanMsg.includes('recommend') || cleanMsg.includes('which book') || cleanMsg.includes('what should i read')) {
-      reply = `As your literary co-scribe powered by **Gemini 3.8 Flash**, I have examined your request against our library archives.\n\n` +
-        `I strongly suggest immersing yourself in **${primaryRec.bookName}** by *${primaryRec.author}*.\n\n` +
-        `**Key Excerpt to Study (Page ${primaryRec.pageNumber}):**\n` +
-        `> "${primaryRec.excerpt}"\n\n` +
-        `**Craft Insight:** Notice the acoustic rhythm and spatial intimacy in this opening. The pacing demonstrates how classical Bengali prose grounds philosophical wonder in concrete sensory motifs.\n\n` +
-        (secondaryRec ? `For a contrasting stylistic balance, also examine **${secondaryRec.bookName}** (Page ${secondaryRec.pageNumber}), where the narrative tension shifts toward external conflict.` : '');
-    } else if (cleanMsg.includes('dialogue') || cleanMsg.includes('character') || cleanMsg.includes('conflict')) {
-      reply = `Through the lens of **Gemini 3.8 Flash**, classical narrative tension works best when internal yearning clashes against unyielding social conventions.\n\n` +
-        `In our collection, examine **${primaryRec.bookName}** by *${primaryRec.author}*. On Page ${primaryRec.pageNumber}, notice how dialogue reveals subtext without melodrama:\n\n` +
-        `> "${primaryRec.quote}"\n\n` +
-        `**Editorial Suggestion:** Try holding back your characters' direct confessions. Allow their physical actions—such as a gaze into the courtyard or the cadence of a silence—to bear the weight of their spoken cipher.`;
-    } else if (cleanMsg.includes('nature') || cleanMsg.includes('forest') || cleanMsg.includes('atmosphere')) {
-      reply = `To evoke deep atmospheric resonance, **Gemini 3.8 Flash** recommends drawing from the animistic environmental immersion in **${primaryRec.bookName}**.\n\n` +
-        `Look specifically at Page ${primaryRec.pageNumber} (${primaryRec.pageTitle}):\n\n` +
-        `> "${primaryRec.excerpt}"\n\n` +
-        `**Writing Exercise:** Describe your scene's setting not as passive backdrop, but as an active sentient protagonist that breathes alongside your characters.`;
-    } else {
-      reply = `Greetings, fellow scribe. Using **Gemini 3.8 Flash**, I have retrieved context from our manuscript archives to guide your work.\n\n` +
-        `Your inquiry touches upon thematic layers present in **${primaryRec.bookName}** by *${primaryRec.author}*.\n\n` +
-        `**Archival Excerpt from Page ${primaryRec.pageNumber}:**\n` +
-        `> "${primaryRec.excerpt}"\n\n` +
-        `**Recommendation for Your Manuscript:** Study how this passage balances syntactic dignity with emotional vulnerability. You can click below to load this folio directly into your reading chamber for side-by-side study.`;
-    }
-
+    // 3. Fallback only if no API key is provided
     return {
       id: `msg-${Date.now()}`,
       sender: 'agent',
       modelId: GEMINI_MODEL,
       modelName: 'Gemini 3.8 Flash',
-      text: reply,
+      text: `Gemini API key is unconfigured. Please provide VITE_GEMINI_API_KEY in your environment to consult the live neural model.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       citations: citations
     };

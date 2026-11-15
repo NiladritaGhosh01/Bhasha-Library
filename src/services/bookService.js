@@ -4,11 +4,22 @@
  * Provides unified access to book metadata stored in Cloud Firestore and
  * manuscript digital folios from Firebase Cloud Storage.
  * Tracks click telemetry (popularity metric) and powers search & AI context.
+ * 
+ * Supports offline-first resilience with local storage caching and
+ * real-time bidirectional synchronization with Cloud Firestore.
  */
 
-import { isFirebaseConfigured, FIREBASE_COLLECTIONS } from './firebaseConfig';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  onSnapshot, 
+  increment, 
+  serverTimestamp 
+} from 'firebase/firestore';
+import { db, auth, isFirebaseConfigured, FIREBASE_COLLECTIONS } from './firebaseConfig';
 
-const INITIAL_BOOKS = [
+export const INITIAL_BOOKS = [
   {
     id: 'gitanjali-1910',
     name: 'Gitanjali (গীতাঞ্জলি - Song Offerings)',
@@ -228,7 +239,7 @@ const INITIAL_BOOKS = [
   {
     id: 'chander-pahar-1937',
     name: 'Chander Pahar (চাঁদের পাহাড় - Mountain of the Moon)',
-    author: 'Bibhutibhushan Bandyopadhyay (বিभूतिভূষণ বন্দ্যোপাধ্যায়)',
+    author: 'Bibhutibhushan Bandyopadhyay (বিভূতিভূষণ বন্দ্যোপাধ্যায়)',
     yearPublished: 1937,
     decade: '1930s',
     genre: 'Adventure & Exploration',
@@ -335,7 +346,7 @@ const INITIAL_BOOKS = [
   }
 ];
 
-// Persistent click cache in memory / local storage
+// Persistent click cache in memory & local storage
 const STORAGE_KEY = 'bhasha_library_clicks_cache';
 
 function getPersistedClicks() {
@@ -355,15 +366,100 @@ function savePersistedClicks(clicksMap) {
   }
 }
 
+// In-memory reactive state
+let inMemoryBooks = [...INITIAL_BOOKS];
+let inMemoryClicks = getPersistedClicks();
+const subscribers = new Set();
+let isFirestoreInitialized = false;
+
+function notifySubscribers() {
+  const books = bookService.getAllBooks();
+  subscribers.forEach(cb => {
+    try {
+      cb(books);
+    } catch (err) {
+      console.error('[BookService] Subscriber callback error:', err);
+    }
+  });
+}
+
+/**
+ * Initializes Firestore real-time subscriptions for manuscripts and click telemetry
+ */
+function initFirestoreSync() {
+  if (isFirestoreInitialized || !isFirebaseConfigured) return;
+  isFirestoreInitialized = true;
+
+  // 1. Subscribe to Reader Click Telemetry in Firestore
+  try {
+    const clickCollectionRef = collection(db, FIREBASE_COLLECTIONS.CLICK_TELEMETRY);
+    onSnapshot(clickCollectionRef, (snapshot) => {
+      let updated = false;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const count = data.clicks ?? data.clickCount;
+        if (typeof count === 'number' && inMemoryClicks[docSnap.id] !== count) {
+          inMemoryClicks[docSnap.id] = count;
+          updated = true;
+        }
+      });
+      if (updated) {
+        savePersistedClicks(inMemoryClicks);
+        notifySubscribers();
+      }
+    }, (error) => {
+      // Graceful fallback: Firestore not yet created in console or network unavailable
+      console.info('[Firestore] Click telemetry operating in offline/local mode:', error.message);
+    });
+  } catch (err) {
+    console.info('[Firestore] Reader clicks subscription bypassed:', err.message);
+  }
+
+  // 2. Subscribe to Manuscripts Catalog in Firestore
+  try {
+    const booksCollectionRef = collection(db, FIREBASE_COLLECTIONS.BOOKS);
+    onSnapshot(booksCollectionRef, (snapshot) => {
+      if (!snapshot.empty) {
+        const remoteBooks = [];
+        snapshot.forEach(docSnap => {
+          remoteBooks.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+        });
+        inMemoryBooks = remoteBooks;
+        notifySubscribers();
+      }
+    }, (error) => {
+      console.info('[Firestore] Manuscripts catalog operating with archival initial folios:', error.message);
+    });
+  } catch (err) {
+    console.info('[Firestore] Manuscripts catalog subscription bypassed:', err.message);
+  }
+}
+
 export const bookService = {
+  /**
+   * Subscribes a listener to live book catalog and click updates.
+   * Auto-initializes Firestore sync on first subscription.
+   */
+  subscribe(callback) {
+    initFirestoreSync();
+    subscribers.add(callback);
+    // Initial emission
+    callback(this.getAllBooks());
+    return () => {
+      subscribers.delete(callback);
+    };
+  },
+
   /**
    * Retrieves all books merged with latest click telemetry
    */
   getAllBooks() {
-    const persisted = getPersistedClicks();
-    return INITIAL_BOOKS.map(book => ({
+    return inMemoryBooks.map(book => ({
       ...book,
-      clicks: (persisted[book.id] !== undefined) ? persisted[book.id] : book.clicks
+      clicks: (inMemoryClicks[book.id] !== undefined) ? inMemoryClicks[book.id] : (book.clicks || 0)
     }));
   },
 
@@ -386,21 +482,31 @@ export const bookService = {
   },
 
   /**
-   * Increments the click telemetry for a book (simulating / syncing with Firebase)
+   * Increments the click telemetry for a book with optimistic local update
+   * and Cloud Firestore reader_clicks persistence.
    */
   recordBookClick(id) {
-    const persisted = getPersistedClicks();
-    const current = persisted[id] !== undefined 
-      ? persisted[id] 
-      : (INITIAL_BOOKS.find(b => b.id === id)?.clicks || 0);
+    const current = inMemoryClicks[id] !== undefined 
+      ? inMemoryClicks[id] 
+      : (inMemoryBooks.find(b => b.id === id)?.clicks || 0);
     
     const updated = current + 1;
-    persisted[id] = updated;
-    savePersistedClicks(persisted);
+    inMemoryClicks[id] = updated;
+    savePersistedClicks(inMemoryClicks);
+    notifySubscribers();
 
-    if (isFirebaseConfigured) {
-      // In production Firebase mode, record to Firestore reader_clicks
-      console.log(`[Firebase Telemetry] Recorded click for ${id} in ${FIREBASE_COLLECTIONS.CLICK_TELEMETRY}: ${updated}`);
+    // Asynchronously record to Cloud Firestore
+    if (isFirebaseConfigured && db) {
+      const clickDocRef = doc(db, FIREBASE_COLLECTIONS.CLICK_TELEMETRY, id);
+      setDoc(clickDocRef, {
+        id,
+        bookId: id,
+        clicks: increment(1),
+        lastClickedAt: serverTimestamp()
+      }, { merge: true }).catch(err => {
+        // If Firestore is unprovisioned, keep local count safely without throwing
+        console.warn(`[Firestore Telemetry] Synced locally. Cloud write status: ${err.message}`);
+      });
     }
 
     return updated;
@@ -417,9 +523,9 @@ export const bookService = {
       list = list.filter(b => 
         b.name.toLowerCase().includes(q) ||
         b.author.toLowerCase().includes(q) ||
-        b.genre.toLowerCase().includes(q) ||
-        b.summary.toLowerCase().includes(q) ||
-        b.isbn.toLowerCase().includes(q)
+        (b.genre && b.genre.toLowerCase().includes(q)) ||
+        (b.summary && b.summary.toLowerCase().includes(q)) ||
+        (b.isbn && b.isbn.toLowerCase().includes(q))
       );
     }
 
@@ -428,7 +534,7 @@ export const bookService = {
     }
 
     if (genre && genre !== 'All') {
-      list = list.filter(b => b.genre.toLowerCase().includes(genre.toLowerCase()));
+      list = list.filter(b => b.genre && b.genre.toLowerCase().includes(genre.toLowerCase()));
     }
 
     // Sort order
@@ -451,7 +557,7 @@ export const bookService = {
    * Return unique available decades
    */
   getDecades() {
-    const set = new Set(INITIAL_BOOKS.map(b => b.decade));
+    const set = new Set(inMemoryBooks.map(b => b.decade).filter(Boolean));
     return ['All', ...Array.from(set).sort()];
   },
 
@@ -459,7 +565,7 @@ export const bookService = {
    * Return unique available genres
    */
   getGenres() {
-    const set = new Set(INITIAL_BOOKS.map(b => b.genre));
+    const set = new Set(inMemoryBooks.map(b => b.genre).filter(Boolean));
     return ['All', ...Array.from(set).sort()];
   },
 
@@ -471,24 +577,135 @@ export const bookService = {
     const q = query.toLowerCase();
     const results = [];
 
-    INITIAL_BOOKS.forEach(book => {
-      book.pagesData.forEach(page => {
-        page.paragraphs.forEach((para, idx) => {
-          if (para.toLowerCase().includes(q) || book.summary.toLowerCase().includes(q)) {
-            results.push({
-              bookId: book.id,
-              bookName: book.name,
-              author: book.author,
-              pageNumber: page.pageNumber,
-              pageTitle: page.title,
-              paragraphIndex: idx + 1,
-              text: para
+    inMemoryBooks.forEach(book => {
+      if (Array.isArray(book.pagesData)) {
+        book.pagesData.forEach(page => {
+          if (Array.isArray(page.paragraphs)) {
+            page.paragraphs.forEach((para, idx) => {
+              if (para.toLowerCase().includes(q) || (book.summary && book.summary.toLowerCase().includes(q))) {
+                results.push({
+                  bookId: book.id,
+                  bookName: book.name,
+                  author: book.author,
+                  pageNumber: page.pageNumber,
+                  pageTitle: page.title,
+                  paragraphIndex: idx + 1,
+                  text: para
+                });
+              }
             });
           }
         });
-      });
+      }
     });
 
     return results;
+  },
+
+  /**
+   * Publishes a new manuscript to Cloud Firestore's manuscripts_catalog
+   * Conforms strictly to firestore.rules isValidManuscript schema
+   */
+  async addManuscript(manuscript) {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required: please log in to publish a manuscript.');
+    }
+
+    const year = Number(manuscript.yearPublished);
+    const pages = Number(manuscript.pages);
+    if (!manuscript.name?.trim()) throw new Error('Manuscript title is required.');
+    if (!manuscript.author?.trim()) throw new Error('Author name is required.');
+    if (isNaN(year) || year < 1000 || year > 2100) throw new Error('Valid publication year (1000-2100) is required.');
+    if (isNaN(pages) || pages <= 0 || pages > 10000) throw new Error('Valid page count (1-10000) is required.');
+
+    const cleanId = manuscript.id?.trim() || 
+      `${manuscript.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30)}-${year}`;
+
+    const newDoc = {
+      id: cleanId,
+      name: manuscript.name.trim().slice(0, 200),
+      author: manuscript.author.trim().slice(0, 150),
+      yearPublished: year,
+      decade: manuscript.decade || `${Math.floor(year / 10) * 10}s`,
+      genre: (manuscript.genre || 'Classical Literature').trim().slice(0, 100),
+      pages: pages,
+      isbn: manuscript.isbn ? manuscript.isbn.trim().slice(0, 50) : `978-BHA-${Date.now().toString().slice(-6)}`,
+      clicks: 0,
+      storageUrl: manuscript.storageUrl ? manuscript.storageUrl.trim().slice(0, 500) : '',
+      summary: (manuscript.summary || '').trim().slice(0, 5000),
+      coverColor: manuscript.coverColor || '#3D1308',
+      coverAccent: manuscript.coverAccent || '#E27D5B',
+      coverMotif: manuscript.coverMotif || 'lotus',
+      pagesData: Array.isArray(manuscript.pagesData) && manuscript.pagesData.length > 0 
+        ? manuscript.pagesData 
+        : [
+            {
+              pageNumber: 1,
+              title: 'Folio I — Initial Inscription',
+              paragraphs: [
+                manuscript.summary || 'A newly preserved literary folio entered into the Bhasha Library archival catalog.'
+              ]
+            }
+          ]
+    };
+
+    if (isFirebaseConfigured && db) {
+      const bookDocRef = doc(db, FIREBASE_COLLECTIONS.BOOKS, cleanId);
+      await setDoc(bookDocRef, {
+        ...newDoc,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    // Also update in-memory catalog
+    const existingIdx = inMemoryBooks.findIndex(b => b.id === cleanId);
+    if (existingIdx >= 0) {
+      inMemoryBooks[existingIdx] = newDoc;
+    } else {
+      inMemoryBooks = [newDoc, ...inMemoryBooks];
+    }
+    notifySubscribers();
+
+    return newDoc;
+  },
+
+  /**
+   * Seeds the initial classical manuscripts into Cloud Firestore
+   * Useful when establishing a fresh database instance.
+   */
+  async seedInitialManuscripts() {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required: please log in as an author to seed the catalog.');
+    }
+    if (!isFirebaseConfigured || !db) {
+      throw new Error('Firebase is not configured.');
+    }
+
+    let seededCount = 0;
+    for (const book of INITIAL_BOOKS) {
+      const docRef = doc(db, FIREBASE_COLLECTIONS.BOOKS, book.id);
+      const cleanData = {
+        id: book.id,
+        name: book.name,
+        author: book.author,
+        yearPublished: book.yearPublished,
+        decade: book.decade,
+        genre: book.genre,
+        pages: book.pages,
+        isbn: book.isbn,
+        clicks: book.clicks,
+        storageUrl: book.storageUrl,
+        summary: book.summary,
+        coverColor: book.coverColor,
+        coverAccent: book.coverAccent,
+        coverMotif: book.coverMotif,
+        pagesData: book.pagesData
+      };
+      await setDoc(docRef, cleanData, { merge: true });
+      seededCount++;
+    }
+
+    return { success: true, count: seededCount };
   }
 };

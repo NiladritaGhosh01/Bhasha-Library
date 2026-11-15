@@ -773,3 +773,545 @@
   border-color: var(--color-cherry-maroon);
   color: #FFFFFF;
 }
+
+/* ==========================================================================
+   Firestore Cloud Sync & Author Notes Badges
+   ========================================================================== */
+
+.notes-sync-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-on-surface-muted);
+}
+
+.notes-sync-indicator.sync-synced {
+  color: #2E7D32;
+  border-color: rgba(46, 125, 50, 0.3);
+  background-color: rgba(46, 125, 50, 0.08);
+}
+
+.dark .notes-sync-indicator.sync-synced {
+  color: #81C784;
+  border-color: rgba(129, 199, 132, 0.3);
+  background-color: rgba(129, 199, 132, 0.12);
+}
+
+.notes-sync-indicator.sync-syncing {
+  color: #B76E00;
+  border-color: rgba(183, 110, 0, 0.3);
+  background-color: rgba(183, 110, 0, 0.08);
+}
+
+.dark .notes-sync-indicator.sync-syncing {
+  color: #FFB74D;
+  border-color: rgba(255, 183, 77, 0.3);
+  background-color: rgba(255, 183, 77, 0.12);
+}
+
+.notes-sync-indicator.sync-local {
+  color: var(--color-on-surface-muted);
+}
+
+.author-publish-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.dark .author-publish-top-btn {
+  border-color: var(--border-accent);
+}
+
+.author-publish-top-btn:hover {
+  background-color: var(--color-cherry-maroon);
+}
+
+/* ==========================================================================
+   Catalogue Actions & Seed Banner
+   ========================================================================== */
+
+.catalogue-header-actions-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.seed-classics-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.375rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-medium);
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.seed-classics-btn:hover {
+  background-color: var(--color-surface-container);
+  border-color: var(--color-primary-ink);
+}
+
+.add-manuscript-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.375rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.dark .add-manuscript-btn {
+  border-color: var(--border-accent);
+}
+
+.add-manuscript-btn:hover {
+  background-color: var(--color-cherry-maroon);
+}
+
+.catalogue-feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.625rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--border-medium);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  color: var(--color-on-surface);
+  animation: fadeInModal 0.25s ease-out;
+}
+
+/* ==========================================================================
+   Add Manuscript Modal
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(18, 12, 10, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeInModal 0.2s ease-out;
+}
+
+.add-manuscript-modal {
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-medium);
+  background-color: var(--color-surface-container);
+}
+
+.modal-header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-kicker {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-terracotta);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.modal-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.125rem;
+  color: var(--color-on-surface-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-xs);
+  transition: var(--transition-smooth);
+}
+
+.modal-close-btn:hover {
+  color: var(--color-on-surface);
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.modal-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(220, 38, 38, 0.1);
+  border-bottom: 1px solid rgba(220, 38, 38, 0.25);
+  color: #DC2626;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+}
+
+.dark .modal-error-banner {
+  color: #F87171;
+  background-color: rgba(220, 38, 38, 0.2);
+}
+
+.modal-form {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-group.flex-1 {
+  flex: 1;
+  min-width: 120px;
+}
+
+.form-group.flex-2 {
+  flex: 2;
+  min-width: 200px;
+}
+
+.form-group label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.modal-input,
+.modal-select,
+.modal-textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xs);
+  color: var(--color-on-surface);
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.modal-input:focus,
+.modal-select:focus,
+.modal-textarea:focus {
+  border-color: var(--color-cherry-maroon);
+  box-shadow: var(--focus-ring);
+}
+
+.palette-picker {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  height: 38px;
+}
+
+.palette-chip {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.palette-chip:hover {
+  transform: scale(1.15);
+}
+
+.palette-chip.selected {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px var(--color-on-surface);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.btn-modal-cancel {
+  background: none;
+  border: 1px solid var(--border-medium);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-modal-cancel:hover {
+  background-color: var(--color-surface-container);
+}
+
+.btn-modal-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.dark .btn-modal-submit {
+  border-color: var(--border-accent);
+}
+
+.btn-modal-submit:hover:not(:disabled) {
+  background-color: var(--color-cherry-maroon);
+}
+
+.btn-modal-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   AI Chat Authentication Gate & Author Status Pill
+   ========================================================================== */
+
+.author-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-on-surface);
+}
+
+.author-status-pill i {
+  color: #2E7D32;
+  font-size: 0.75rem;
+}
+
+.dark .author-status-pill i {
+  color: #81C784;
+}
+
+.llm-loading-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  color: var(--color-on-surface-muted);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+}
+
+.llm-auth-gate-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background-color: var(--color-surface);
+  overflow-y: auto;
+}
+
+.auth-gate-card {
+  max-width: 28rem;
+  width: 100%;
+  text-align: center;
+  padding: 2.25rem 2rem;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInModal 0.25s ease-out;
+}
+
+.auth-gate-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--color-terracotta);
+  margin-bottom: 1rem;
+}
+
+.auth-gate-kicker {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--color-terracotta);
+  margin-bottom: 0.25rem;
+}
+
+.auth-gate-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 0.25rem;
+}
+
+.auth-gate-bengali {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-muted);
+  margin: 0 0 1rem;
+}
+
+.auth-gate-description {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-on-surface-muted);
+  margin: 0 0 1.25rem;
+}
+
+.auth-gate-features {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  text-align: left;
+  margin-bottom: 1.75rem;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.gate-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-on-surface);
+}
+
+.gate-feature-item i {
+  color: var(--color-terracotta);
+  font-size: 0.875rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.auth-gate-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary-ink);
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.dark .auth-gate-login-btn {
+  border-color: var(--border-accent);
+}
+
+.auth-gate-login-btn:hover {
+  background-color: var(--color-cherry-maroon);
+}

@@ -1,10 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { BookCoverCard } from './BookCoverCard';
 import { bookService } from '../services/bookService';
 
 export function BookCoverMarquee({ onSelectBook }) {
-  const books = bookService.getAllBooks();
+  const [books, setBooks] = useState(() => bookService.getAllBooks());
   const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const unsubscribe = bookService.subscribe((updated) => {
+      setBooks(updated);
+    });
+    return unsubscribe;
+  }, []);
 
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -60,7 +67,7 @@ export function BookCoverMarquee({ onSelectBook }) {
               />
               <div className="marquee-item-meta">
                 <span className="meta-clicks">
-                  <i className="fa-solid fa-fire-flame-curved"></i> {book.clicks.toLocaleString()} reads
+                  <i className="fa-solid fa-fire-flame-curved"></i> {(book.clicks || 0).toLocaleString()} reads
                 </span>
                 <span className="meta-year">{book.yearPublished}</span>
               </div>
@@ -77,7 +84,7 @@ export function BookCoverMarquee({ onSelectBook }) {
               />
               <div className="marquee-item-meta">
                 <span className="meta-clicks">
-                  <i className="fa-solid fa-fire-flame-curved"></i> {book.clicks.toLocaleString()} reads
+                  <i className="fa-solid fa-fire-flame-curved"></i> {(book.clicks || 0).toLocaleString()} reads
                 </span>
                 <span className="meta-year">{book.yearPublished}</span>
               </div>
