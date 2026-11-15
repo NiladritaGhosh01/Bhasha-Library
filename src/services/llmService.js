@@ -7,7 +7,7 @@
 
 import { bookService } from './bookService';
 
-export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'AQ.Ab8RN6J7N7zC1bGCdeNCr0XTH7s9Gq7G845vrjivobvhWAXzkQ';
+export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 export const GEMINI_MODEL = 'gemini-3.8-flash';
 
 export const AVAILABLE_MODELS = [
