@@ -344,7 +344,7 @@ export function BookReader({ book, initialPage = 1, onBackToSearch }) {
       <div className="reader-storage-footer">
         <div className="storage-info">
           <i className="fa-solid fa-cloud-arrow-down"></i>
-          <span>Firebase Cloud Storage Source:</span>
+          <span>Archival Digital Folio Source:</span>
           <code>{book.storageUrl}</code>
         </div>
         <div className="book-meta-pills">

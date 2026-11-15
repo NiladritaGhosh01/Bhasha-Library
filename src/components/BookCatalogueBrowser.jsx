@@ -1,27 +1,80 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { bookService } from '../services/bookService';
 import { BookCoverCard } from './BookCoverCard';
+import { useAuth } from '../hooks/useAuth';
 
-export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary Catalogue', subtitle = 'Search and discover classical manuscripts preserved across our archives' }) {
+export function BookCatalogueBrowser({ 
+  onSelectBook, 
+  title = 'Reader Sanctuary Catalogue', 
+  subtitle = 'Search and discover classical manuscripts preserved across our archives',
+  onOpenAddModal
+}) {
+  const { user } = useAuth();
+  const [allBooks, setAllBooks] = useState(() => bookService.getAllBooks());
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDecade, setSelectedDecade] = useState('All');
   const [selectedGenre, setSelectedGenre] = useState('All');
   const [sortBy, setSortBy] = useState('popular');
+  const [seedStatus, setSeedStatus] = useState('');
 
-  const decades = useMemo(() => bookService.getDecades(), []);
-  const genres = useMemo(() => bookService.getGenres(), []);
+  // Real-time subscription to bookService (Firestore + local cache)
+  useEffect(() => {
+    const unsubscribe = bookService.subscribe((updated) => {
+      setAllBooks(updated);
+    });
+    return unsubscribe;
+  }, []);
+
+  const decades = useMemo(() => {
+    const set = new Set(allBooks.map(b => b.decade).filter(Boolean));
+    return ['All', ...Array.from(set).sort()];
+  }, [allBooks]);
+
+  const genres = useMemo(() => {
+    const set = new Set(allBooks.map(b => b.genre).filter(Boolean));
+    return ['All', ...Array.from(set).sort()];
+  }, [allBooks]);
 
   // Filtered and sorted books
-  const books = useMemo(() => {
-    return bookService.getBooks({
-      search: searchQuery,
-      decade: selectedDecade,
-      genre: selectedGenre,
-      sortBy: sortBy
-    });
-  }, [searchQuery, selectedDecade, selectedGenre, sortBy]);
+  const filteredBooks = useMemo(() => {
+    let list = [...allBooks];
 
-  const popularCount = books.length;
+    if (searchQuery && searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(b => 
+        (b.name && b.name.toLowerCase().includes(q)) ||
+        (b.author && b.author.toLowerCase().includes(q)) ||
+        (b.genre && b.genre.toLowerCase().includes(q)) ||
+        (b.summary && b.summary.toLowerCase().includes(q)) ||
+        (b.isbn && b.isbn.toLowerCase().includes(q))
+      );
+    }
+
+    if (selectedDecade && selectedDecade !== 'All') {
+      list = list.filter(b => b.decade === selectedDecade);
+    }
+
+    if (selectedGenre && selectedGenre !== 'All') {
+      list = list.filter(b => b.genre && b.genre.toLowerCase().includes(selectedGenre.toLowerCase()));
+    }
+
+    // Sort order
+    if (sortBy === 'popular') {
+      list.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
+    } else if (sortBy === 'year-asc') {
+      list.sort((a, b) => a.yearPublished - b.yearPublished);
+    } else if (sortBy === 'year-desc') {
+      list.sort((a, b) => b.yearPublished - a.yearPublished);
+    } else if (sortBy === 'title') {
+      list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } else if (sortBy === 'pages') {
+      list.sort((a, b) => (b.pages || 0) - (a.pages || 0));
+    }
+
+    return list;
+  }, [allBooks, searchQuery, selectedDecade, selectedGenre, sortBy]);
+
+  const popularCount = filteredBooks.length;
 
   const handleBookClick = (book) => {
     // Record click telemetry (popularity metric)
@@ -38,6 +91,23 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
     setSortBy('popular');
   };
 
+  const handleSeedClassics = async () => {
+    if (!user) {
+      alert('Please log in with an author account to sync classical folios.');
+      return;
+    }
+    try {
+      setSeedStatus('Syncing archival folios to library vault...');
+      const res = await bookService.seedInitialManuscripts();
+      setSeedStatus(`✓ Successfully synced ${res.count} manuscripts to library vault!`);
+      setTimeout(() => setSeedStatus(''), 4000);
+    } catch (err) {
+      console.error(err);
+      setSeedStatus(`Vault Notice: ${err.message}`);
+      setTimeout(() => setSeedStatus(''), 6000);
+    }
+  };
+
   return (
     <div className="catalogue-browser-container" data-purpose="letterboxd-style-book-catalogue">
       {/* Header Banner */}
@@ -48,11 +118,44 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
           <p className="catalogue-subtitle">{subtitle}</p>
         </div>
 
-        <div className="catalogue-stat-badge">
-          <i className="fa-solid fa-book-bookmark"></i>
-          <span>{popularCount} Manuscripts Available</span>
+        <div className="catalogue-header-actions-group">
+          <div className="catalogue-stat-badge">
+            <i className="fa-solid fa-book-bookmark"></i>
+            <span>{popularCount} Manuscripts Available</span>
+          </div>
+
+          {user && (
+            <button
+              type="button"
+              className="btn-spring seed-classics-btn"
+              onClick={handleSeedClassics}
+              title="Sync initial classical folios to library vault"
+            >
+              <i className="fa-solid fa-cloud-arrow-up"></i>
+              <span>Sync to Vault</span>
+            </button>
+          )}
+
+          {onOpenAddModal && (
+            <button
+              type="button"
+              className="btn-spring add-manuscript-btn"
+              onClick={onOpenAddModal}
+              title="Publish a new manuscript to the archive"
+            >
+              <i className="fa-solid fa-plus"></i>
+              <span>Add Manuscript</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {seedStatus && (
+        <div className="catalogue-feedback-banner">
+          <i className="fa-solid fa-circle-info"></i>
+          <span>{seedStatus}</span>
+        </div>
+      )}
 
       {/* Ribbon Bar: Search, Decade, Genre, and Sort Controls */}
       <div className="catalogue-ribbon-bar">
@@ -151,7 +254,7 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
         <div className="popularity-banner-left">
           <i className="fa-solid fa-chart-line-up"></i>
           <span>
-            Showing <strong>{books.length}</strong> works ranked by reader circulation and popularity metrics
+            Showing <strong>{filteredBooks.length}</strong> works ranked by reader circulation and popularity metrics
           </span>
         </div>
         <div className="popularity-banner-right">
@@ -160,9 +263,9 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
       </div>
 
       {/* Book Grid */}
-      {books.length > 0 ? (
+      {filteredBooks.length > 0 ? (
         <div className="catalogue-grid">
-          {books.map((book, index) => (
+          {filteredBooks.map((book, index) => (
             <div
               key={book.id}
               className="catalogue-card"
@@ -201,7 +304,7 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
                 <div className="card-telemetry">
                   <div className="telemetry-stat clicks-stat">
                     <i className="fa-solid fa-fire"></i>
-                    <span>{book.clicks.toLocaleString()} reads</span>
+                    <span>{(book.clicks || 0).toLocaleString()} reads</span>
                   </div>
                   <div className="telemetry-stat pages-stat">
                     <i className="fa-regular fa-file-lines"></i>
@@ -218,7 +321,7 @@ export function BookCatalogueBrowser({ onSelectBook, title = 'Reader Sanctuary C
                     <i className="fa-solid fa-book-open"></i>
                     <span>Read Folio • পাঠ শুরু করুন</span>
                   </button>
-                  <span className="card-isbn">ISBN: {book.isbn}</span>
+                  {book.isbn && <span className="card-isbn">ISBN: {book.isbn}</span>}
                 </div>
               </div>
             </div>

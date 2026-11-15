@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Archival manuscript digital folios: public read, authenticated author upload
+    match /manuscripts/{manuscriptId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('application/pdf') ||
+                       request.resource.contentType.matches('text/.*'));
+    }
+
+    // Archival book cover artwork: public read, authenticated author upload
+    match /covers/{coverId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                      request.resource.size < 10 * 1024 * 1024 &&
+                      request.resource.contentType.matches('image/.*');
+    }
+
+    // Strict default deny for all other storage paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

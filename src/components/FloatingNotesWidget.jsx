@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth, onAuthStateChanged, FIREBASE_COLLECTIONS } from '../services/firebaseConfig';
 
-const STORAGE_KEY = 'bhasha_author_running_notes';
+const LOCAL_STORAGE_KEY = 'bhasha_author_running_notes';
 
-export function FloatingNotesWidget() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [notes, setNotes] = useState(() => {
-    try {
-      return localStorage.getItem(STORAGE_KEY) || 
-`# Author's Running Codex (লেখক নোটবই)
+const DEFAULT_NOTES_TEMPLATE = `# Author's Running Codex (লেখক নোটবই)
 *Drafted during manuscript research in Bhasha Fellowship*
 
 ## Key Observations:
@@ -15,8 +12,18 @@ export function FloatingNotesWidget() {
 - **Tagore's Metaphors:** Notice how Gitanjali uses the "frail vessel" and "reed flute" to evoke surrender.
 
 `;
+
+export function FloatingNotesWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [syncStatus, setSyncStatus] = useState('local'); // 'synced' | 'syncing' | 'local' | 'error'
+  const [statusMessage, setStatusMessage] = useState('Local Cache');
+  
+  const [notes, setNotes] = useState(() => {
+    try {
+      return localStorage.getItem(LOCAL_STORAGE_KEY) || DEFAULT_NOTES_TEMPLATE;
     } catch {
-      return '# Author\'s Running Codex\n\n';
+      return DEFAULT_NOTES_TEMPLATE;
     }
   });
 
@@ -25,15 +32,107 @@ export function FloatingNotesWidget() {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 0, posY: 0 });
   const textareaRef = useRef(null);
+  const debounceTimerRef = useRef(null);
+  const isTypingRef = useRef(false);
 
-  // Auto-save to localStorage
+  // Monitor Firebase Auth state
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      if (!user) {
+        setSyncStatus('local');
+        setStatusMessage('Guest Codex (Sign in to sync)');
+      }
+    });
+    return () => unsubscribeAuth();
+  }, []);
+
+  // Listen to Firestore real-time updates for the authenticated user
+  useEffect(() => {
+    if (!currentUser || !db) return;
+
     try {
-      localStorage.setItem(STORAGE_KEY, notes);
-    } catch {
-      // ignore storage quota errors
+      const noteDocRef = doc(db, FIREBASE_COLLECTIONS.RESEARCH_NOTES, currentUser.uid);
+      const unsubscribeDoc = onSnapshot(noteDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const remoteNotes = data.notes ?? data.content;
+          // Only update if not currently typing to avoid cursor jumps
+          if (remoteNotes !== undefined && !isTypingRef.current) {
+            setNotes(remoteNotes);
+            try {
+              localStorage.setItem(LOCAL_STORAGE_KEY, remoteNotes);
+            } catch {
+              // ignore storage errors
+            }
+          }
+          setSyncStatus('synced');
+          setStatusMessage('Cloud Inscribed');
+        } else {
+          setSyncStatus('local');
+          setStatusMessage('New Codex');
+        }
+      }, (err) => {
+        console.info('[Notes Firestore] Falling back to local storage:', err.message);
+        setSyncStatus('local');
+        setStatusMessage('Offline Local Cache');
+      });
+
+      return () => unsubscribeDoc();
+    } catch (err) {
+      console.warn('[Notes Firestore] Subscription error:', err);
     }
-  }, [notes]);
+  }, [currentUser]);
+
+  // Debounced Cloud Save to Firestore + immediate localStorage backup
+  const saveNotes = useCallback((textToSave) => {
+    // 1. Immediate local storage backup
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, textToSave);
+    } catch {
+      // ignore
+    }
+
+    // 2. Cloud Firestore Save if authenticated
+    if (currentUser && db) {
+      setSyncStatus('syncing');
+      setStatusMessage('Syncing to Cloud...');
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(async () => {
+        try {
+          const noteDocRef = doc(db, FIREBASE_COLLECTIONS.RESEARCH_NOTES, currentUser.uid);
+          await setDoc(noteDocRef, {
+            id: currentUser.uid,
+            authorId: currentUser.uid,
+            title: "Author's Running Codex",
+            notes: textToSave,
+            content: textToSave,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+
+          setSyncStatus('synced');
+          setStatusMessage('Cloud Inscribed');
+          isTypingRef.current = false;
+        } catch (err) {
+          console.warn('[Notes Firestore] Write failed, notes preserved locally:', err.message);
+          setSyncStatus('local');
+          setStatusMessage('Preserved Locally');
+          isTypingRef.current = false;
+        }
+      }, 700);
+    }
+  }, [currentUser]);
+
+  const handleNotesChange = (e) => {
+    const updated = e.target.value;
+    isTypingRef.current = true;
+    setNotes(updated);
+    saveNotes(updated);
+  };
 
   // Window drag listeners
   useEffect(() => {
@@ -86,6 +185,7 @@ export function FloatingNotesWidget() {
 
     const updated = notes.substring(0, start) + replacement + notes.substring(end);
     setNotes(updated);
+    saveNotes(updated);
 
     setTimeout(() => {
       textarea.focus();
@@ -143,6 +243,19 @@ export function FloatingNotesWidget() {
             </div>
 
             <div className="notes-header-actions">
+              {/* Cloud Sync Status Pill */}
+              <div 
+                className={`notes-sync-indicator sync-${syncStatus}`}
+                title={statusMessage}
+              >
+                <i className={`fa-solid ${
+                  syncStatus === 'synced' ? 'fa-cloud-arrow-up' :
+                  syncStatus === 'syncing' ? 'fa-arrows-rotate fa-spin' :
+                  'fa-floppy-disk'
+                }`}></i>
+                <span className="notes-sync-text">{statusMessage}</span>
+              </div>
+
               <button
                 type="button"
                 className="notes-icon-btn"
@@ -209,7 +322,12 @@ export function FloatingNotesWidget() {
             <button
               type="button"
               className="notes-tool-btn"
-              onClick={() => setNotes('')}
+              onClick={() => {
+                if (window.confirm('Clear all notes in this codex?')) {
+                  setNotes('');
+                  saveNotes('');
+                }
+              }}
               title="Clear Notes"
             >
               <i className="fa-regular fa-trash-can"></i>
@@ -222,7 +340,7 @@ export function FloatingNotesWidget() {
               ref={textareaRef}
               className="notes-textarea"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={handleNotesChange}
               placeholder="Inscribe your running thoughts, draft revisions, or dialogue fragments here..."
               rows={8}
             />
