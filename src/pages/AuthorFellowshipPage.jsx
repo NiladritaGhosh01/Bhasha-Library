@@ -228,7 +228,11 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
           <button
             type="button"
             className="author-theme-toggle"
-            onClick={onToggleTheme}
+            data-theme-toggle="true"
+            onClick={(e) => {
+              e?.stopPropagation?.();
+              onToggleTheme?.(e);
+            }}
             aria-label="Toggle parchment theme"
           >
             {theme === 'dark' ? (

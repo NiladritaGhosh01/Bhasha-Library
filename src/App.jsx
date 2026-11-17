@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from './hooks/useTheme';
 import { useParallax } from './hooks/useParallax';
+import { useAuth } from './hooks/useAuth';
 
 import { Navbar } from './components/Navbar';
 import { DualBackdrop } from './components/DualBackdrop';
@@ -24,6 +25,7 @@ function getInitialPage() {
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const { activeChapter, scrollProgress } = useParallax();
+  const { isAuthenticated, loading } = useAuth();
   const [currentPage, setCurrentPage] = useState(getInitialPage);
 
   // Sync route with URL hash for browser back/forward and bookmarking
@@ -41,27 +43,79 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleLoginSuccess = (role) => {
-    if (role === 'author') {
-      handleNavigate('author-fellowship');
-    } else {
-      handleNavigate('reader-sanctuary');
-    }
+  const handleLoginSuccess = (_role) => {
+    // Redirect user back to the main home/dashboard view upon authentication
+    handleNavigate('home');
   };
 
+  // Determine effective page: protect restricted routes from unauthenticated access
+  const isProtectedRoute = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary';
+  const effectivePage = (!loading && !isAuthenticated && isProtectedRoute) ? 'login' : currentPage;
+
+  // Sync URL hash if unauthenticated user navigated directly to a protected route
+  useEffect(() => {
+    if (!loading && !isAuthenticated && isProtectedRoute) {
+      if (window.location.hash !== '#login') {
+        window.location.hash = '#login';
+      }
+    }
+  }, [loading, isAuthenticated, isProtectedRoute]);
+
+  // Global Click-to-Sign-In Interception (Auth Gate)
+  // When unauthenticated, intercept clicks across the site and navigate to LoginPage,
+  // while explicitly exempting the Light/Dark Mode toggle so it executes freely for all guests.
+  useEffect(() => {
+    if (loading || isAuthenticated) {
+      return;
+    }
+
+    if (effectivePage === 'login') {
+      return;
+    }
+
+    const handleGlobalClickCapture = (e) => {
+      // Unrestricted Theme Toggle Exemption:
+      // Check if target or any ancestor is a theme toggle button
+      const isThemeToggle = Boolean(
+        e.target &&
+        typeof e.target.closest === 'function' &&
+        e.target.closest('#themeToggleBtn, .navbar-theme-btn, .author-theme-toggle, .sanctuary-theme-toggle, [data-theme-toggle="true"]')
+      );
+
+      if (isThemeToggle) {
+        // Allow theme toggle to execute freely with ZERO auth checks or redirects
+        return;
+      }
+
+      // Any other click across the website is intercepted
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation?.();
+      handleNavigate('login');
+    };
+
+    window.addEventListener('click', handleGlobalClickCapture, true);
+
+    return () => {
+      window.removeEventListener('click', handleGlobalClickCapture, true);
+    };
+  }, [loading, isAuthenticated, effectivePage]);
+
   // Standalone dedicated pages
-  if (currentPage === 'login') {
+  if (effectivePage === 'login') {
     return (
       <div className="login-route-canvas">
         <LoginPage
           onNavigate={handleNavigate}
           onLoginSuccess={handleLoginSuccess}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       </div>
     );
   }
 
-  if (currentPage === 'reader-sanctuary') {
+  if (effectivePage === 'reader-sanctuary') {
     return (
       <div className="reader-route-canvas">
         <ReaderSanctuaryPage
@@ -73,7 +127,7 @@ export default function App() {
     );
   }
 
-  if (currentPage === 'author-fellowship') {
+  if (effectivePage === 'author-fellowship') {
     return (
       <div className="author-route-canvas">
         <AuthorFellowshipPage
@@ -110,7 +164,7 @@ export default function App() {
         <Navbar
           theme={theme}
           onToggleTheme={toggleTheme}
-          currentPage={currentPage}
+          currentPage={effectivePage}
           onNavigate={handleNavigate}
         />
 

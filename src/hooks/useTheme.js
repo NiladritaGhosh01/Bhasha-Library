@@ -21,7 +21,8 @@ export function useTheme() {
     localStorage.setItem('bhasha-theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
+    e?.stopPropagation?.();
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 

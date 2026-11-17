@@ -114,7 +114,11 @@ export function Navbar({ theme, onToggleTheme, currentPage, onNavigate }) {
           <button
             type="button"
             id="themeToggleBtn"
-            onClick={onToggleTheme}
+            data-theme-toggle="true"
+            onClick={(e) => {
+              e?.stopPropagation?.();
+              onToggleTheme?.(e);
+            }}
             className="navbar-theme-btn"
             aria-label="Toggle parchment day and nocturne night theme"
           >
