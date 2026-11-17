@@ -16,6 +16,8 @@ import { AuthorFellowshipPage } from './pages/AuthorFellowshipPage';
 
 function getInitialPage() {
   const hash = window.location.hash.toLowerCase();
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('dashboard') || hash.includes('dashboard')) return 'home';
   if (hash.includes('login')) return 'login';
   if (hash.includes('author')) return 'author-fellowship';
   if (hash.includes('reader')) return 'reader-sanctuary';
@@ -48,8 +50,9 @@ export default function App() {
     handleNavigate('home');
   };
 
-  // Determine effective page: protect restricted routes from unauthenticated access
-  const isProtectedRoute = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary';
+  // Determine effective page: protect restricted routes and /dashboard from unauthenticated access
+  const isDashboardRoute = window.location.pathname.toLowerCase().includes('/dashboard');
+  const isProtectedRoute = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary' || isDashboardRoute;
   const effectivePage = (!loading && !isAuthenticated && isProtectedRoute) ? 'login' : currentPage;
 
   // Sync URL hash if unauthenticated user navigated directly to a protected route
@@ -60,6 +63,32 @@ export default function App() {
       }
     }
   }, [loading, isAuthenticated, isProtectedRoute]);
+
+  // Handle OAuth callback tokens, clean URL params, and smoothly navigate to post-login destination
+  useEffect(() => {
+    if (loading) return;
+
+    const path = window.location.pathname.toLowerCase();
+    const searchParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const hasOAuthParams = searchParams.has('code') || hash.includes('access_token=') || hash.includes('refresh_token=');
+    const isDashboardPath = path.includes('/dashboard');
+
+    if (isAuthenticated) {
+      if (hasOAuthParams || isDashboardPath) {
+        const dest = sessionStorage.getItem('oauth_destination') || 'home';
+        sessionStorage.removeItem('oauth_destination');
+        sessionStorage.removeItem('oauth_intended_role');
+
+        // Clean URL so callback query tokens and /dashboard path do not linger
+        window.history.replaceState(null, '', `${window.location.origin}/#${dest}`);
+        const timer = setTimeout(() => {
+          handleNavigate(dest);
+        }, 0);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isAuthenticated, loading]);
 
   // Global Click-to-Sign-In Interception (Auth Gate)
   // When unauthenticated, intercept clicks across the site and navigate to LoginPage,

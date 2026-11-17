@@ -32,10 +32,11 @@ export function useAuth() {
         if (!error && initialSession?.user) {
           setSession(initialSession);
           setCurrentUser(normalizeSupabaseUser(initialSession.user, initialSession));
-          setLoading(false);
         }
+        setLoading(false);
       }).catch((err) => {
         console.warn('Supabase getSession notice:', err);
+        if (isMounted) setLoading(false);
       });
 
       const { data } = supabase.auth.onAuthStateChange((_event, newSession) => {

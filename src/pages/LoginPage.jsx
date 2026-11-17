@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
-import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
+import { supabase, isSupabaseConfigured, getOAuthRedirectUrl } from '../services/supabaseClient';
 import { 
   auth, 
   googleProvider, 
@@ -11,12 +11,37 @@ import {
 } from '../services/firebaseConfig';
 import { useAuth } from '../hooks/useAuth';
 
+function getInitialOAuthError() {
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+    const hashParams = new URLSearchParams(hashStr);
+
+    const errDesc = searchParams.get('error_description') || hashParams.get('error_description');
+    const errCode = searchParams.get('error') || hashParams.get('error');
+
+    if (errCode || errDesc) {
+      const message = decodeURIComponent(errDesc || errCode || 'Authentication was cancelled or failed.');
+      console.error('OAuth callback error detected:', { code: errCode, description: errDesc });
+      // Clean up URL parameters so errors do not persist in address bar
+      window.history.replaceState(null, '', `${window.location.origin}/#login`);
+      return {
+        type: 'error',
+        text: `Authentication failed: ${message}`
+      };
+    }
+  } catch (e) {
+    console.warn('Notice parsing OAuth URL parameters:', e);
+  }
+  return null;
+}
+
 export function LoginPage({ onNavigate, onLoginSuccess }) {
   const { currentUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('signin');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRole, setSelectedRole] = useState('reader');
-  const [statusMessage, setStatusMessage] = useState(null);
+  const [statusMessage, setStatusMessage] = useState(getInitialOAuthError);
 
   // Form states
   const [signinEmail, setSigninEmail] = useState('');
@@ -26,6 +51,23 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
+
+  // If user becomes authenticated (e.g. via OAuth redirect callback)
+  useEffect(() => {
+    if (currentUser) {
+      const dest = sessionStorage.getItem('oauth_destination') || 'home';
+      sessionStorage.removeItem('oauth_destination');
+      sessionStorage.removeItem('oauth_intended_role');
+      const timer = setTimeout(() => {
+        if (onLoginSuccess) {
+          onLoginSuccess(selectedRole);
+        } else {
+          onNavigate(dest);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, onLoginSuccess, onNavigate, selectedRole]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,6 +257,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
   const handleFederatedSeal = async (provider) => {
     const key = provider.toLowerCase();
     setStatusMessage(null);
+    const redirectUrl = getOAuthRedirectUrl();
 
     if (key.includes('google')) {
       setIsSubmitting(true);
@@ -225,26 +268,21 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
 
       try {
         if (isSupabaseConfigured) {
+          sessionStorage.setItem('oauth_intended_role', selectedRole);
+          sessionStorage.setItem('oauth_destination', selectedRole === 'author' ? 'author-fellowship' : 'home');
+
           const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: window.location.origin
+              redirectTo: redirectUrl
             }
           });
           if (error) {
-            // Fallback to Firebase popup
-            const result = await signInWithPopup(auth, googleProvider);
-            const name = result.user.displayName || result.user.email;
-            setStatusMessage({
-              type: 'success',
-              text: `Inscribed with Google: Welcome, ${name}!`
-            });
-            setTimeout(() => {
-              if (onLoginSuccess) onLoginSuccess(selectedRole);
-              else onNavigate('home');
-            }, 700);
+            console.error('Supabase Google OAuth error:', error);
+            throw error;
           }
         } else {
+          // Fallback to Firebase popup when Supabase credentials are not in .env
           const result = await signInWithPopup(auth, googleProvider);
           const name = result.user.displayName || result.user.email;
           setStatusMessage({
@@ -266,6 +304,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
           if (err.code === 'auth/unauthorized-domain') {
             errorMsg = 'This domain is not authorized for sign-in. Please check your domain authorization settings.';
           }
+          console.error('Google sign-in error:', err);
           setStatusMessage({ type: 'error', text: errorMsg });
         } else {
           setStatusMessage(null);
@@ -282,20 +321,40 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
 
       try {
         if (isSupabaseConfigured) {
-          const { error } = await supabase.auth.signInWithOAuth({
+          sessionStorage.setItem('oauth_intended_role', selectedRole);
+          sessionStorage.setItem('oauth_destination', selectedRole === 'author' ? 'author-fellowship' : 'home');
+
+          let { error } = await supabase.auth.signInWithOAuth({
             provider: 'linkedin_oidc',
             options: {
-              redirectTo: window.location.origin
+              redirectTo: redirectUrl
             }
           });
-          if (error) throw error;
+
+          // Auto-fallback to legacy 'linkedin' provider if 'linkedin_oidc' is unrecognized
+          if (error && (error.message?.toLowerCase().includes('provider') || error.status === 400)) {
+            console.warn('Supabase linkedin_oidc notice, attempting legacy linkedin provider name...');
+            const retry = await supabase.auth.signInWithOAuth({
+              provider: 'linkedin',
+              options: {
+                redirectTo: redirectUrl
+              }
+            });
+            error = retry.error;
+          }
+
+          if (error) {
+            console.error('Supabase LinkedIn OAuth error:', error);
+            throw error;
+          }
         } else {
           setStatusMessage({
             type: 'error',
-            text: 'LinkedIn sign-in requires Supabase OAuth configuration. Please sign in with Email/Password or Google.'
+            text: 'LinkedIn sign-in requires Supabase OAuth configuration. Please add Supabase keys to your .env file.'
           });
         }
       } catch (err) {
+        console.error('LinkedIn authentication error:', err);
         setStatusMessage({
           type: 'error',
           text: err.message || 'LinkedIn authentication could not be completed.'
