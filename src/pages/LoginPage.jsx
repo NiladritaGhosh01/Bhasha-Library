@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ART_ASSETS } from '../assets/artAssets';
+import { supabase, isSupabaseConfigured, getOAuthRedirectUrl } from '../services/supabaseClient';
 import { 
   auth, 
   googleProvider, 
@@ -10,12 +11,37 @@ import {
 } from '../services/firebaseConfig';
 import { useAuth } from '../hooks/useAuth';
 
+function getInitialOAuthError() {
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+    const hashParams = new URLSearchParams(hashStr);
+
+    const errDesc = searchParams.get('error_description') || hashParams.get('error_description');
+    const errCode = searchParams.get('error') || hashParams.get('error');
+
+    if (errCode || errDesc) {
+      const message = decodeURIComponent(errDesc || errCode || 'Authentication was cancelled or failed.');
+      console.error('OAuth callback error detected:', { code: errCode, description: errDesc });
+      // Clean up URL parameters so errors do not persist in address bar
+      window.history.replaceState(null, '', `${window.location.origin}/#login`);
+      return {
+        type: 'error',
+        text: `Authentication failed: ${message}`
+      };
+    }
+  } catch (e) {
+    console.warn('Notice parsing OAuth URL parameters:', e);
+  }
+  return null;
+}
+
 export function LoginPage({ onNavigate, onLoginSuccess }) {
   const { currentUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('signin');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRole, setSelectedRole] = useState('reader');
-  const [statusMessage, setStatusMessage] = useState(null);
+  const [statusMessage, setStatusMessage] = useState(getInitialOAuthError);
 
   // Form states
   const [signinEmail, setSigninEmail] = useState('');
@@ -26,73 +52,201 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
 
+  // If user becomes authenticated (e.g. via OAuth redirect callback)
+  useEffect(() => {
+    if (currentUser) {
+      const dest = sessionStorage.getItem('oauth_destination') || 'home';
+      sessionStorage.removeItem('oauth_destination');
+      sessionStorage.removeItem('oauth_intended_role');
+      const timer = setTimeout(() => {
+        if (onLoginSuccess) {
+          onLoginSuccess(selectedRole);
+        } else {
+          onNavigate(dest);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, onLoginSuccess, onNavigate, selectedRole]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMessage(null);
 
+    const email = (activeTab === 'signin' ? signinEmail : regEmail).trim();
+    const password = activeTab === 'signin' ? signinPassword : regPassword;
+
+    // Form validation: non-empty email, password min 6 chars
+    if (!email) {
+      setIsSubmitting(false);
+      setStatusMessage({
+        type: 'error',
+        text: 'Please enter a valid email address.'
+      });
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setIsSubmitting(false);
+      setStatusMessage({
+        type: 'error',
+        text: 'Password must be at least 6 characters in length.'
+      });
+      return;
+    }
+
     try {
       if (activeTab === 'signin') {
-        const userCredential = await signInWithEmailAndPassword(auth, signinEmail.trim(), signinPassword);
-        const displayName = userCredential.user.displayName || userCredential.user.email;
-        setStatusMessage({
-          type: 'success',
-          text: `Cipher validated. Welcome to the Sanctuary, ${displayName}!`
-        });
+        let authSuccess = false;
+        let displayName = email.split('@')[0];
 
-        setTimeout(() => {
-          if (onLoginSuccess) {
-            onLoginSuccess(selectedRole);
-          } else {
-            onNavigate(selectedRole === 'author' ? 'author-fellowship' : 'reader-sanctuary');
-          }
-        }, 700);
-      } else {
-        if (regPassword.length < 6) {
-          setIsSubmitting(false);
-          setStatusMessage({
-            type: 'error',
-            text: 'Password must be at least 6 characters in length.'
+        // 1. Attempt Supabase authentication if configured
+        if (isSupabaseConfigured) {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
           });
-          return;
+
+          if (!error && data?.user) {
+            authSuccess = true;
+            displayName = data.user.user_metadata?.full_name || data.user.email || displayName;
+          } else if (error) {
+            const errStr = (error.message || '').toLowerCase();
+            // Smart Fallback: If user not registered yet, attempt automatic sign up
+            if (errStr.includes('invalid login credentials') || errStr.includes('user not found')) {
+              const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password
+              });
+
+              if (!signUpError && signUpData?.user) {
+                if (signUpData.session) {
+                  authSuccess = true;
+                  displayName = signUpData.user.email || displayName;
+                  setStatusMessage({
+                    type: 'success',
+                    text: `New chamber inscribed and seal validated! Welcome to Bhasha Library, ${displayName}!`
+                  });
+                } else {
+                  // Confirmation email required by Supabase settings
+                  setStatusMessage({
+                    type: 'success',
+                    text: 'Account inscribed! Please check your email inbox to confirm your registration.'
+                  });
+                  setIsSubmitting(false);
+                  return;
+                }
+              } else {
+                throw error;
+              }
+            } else {
+              throw error;
+            }
+          }
+        } else {
+          // Fallback to Firebase authentication
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          authSuccess = true;
+          displayName = userCredential.user.displayName || userCredential.user.email || displayName;
         }
 
-        const userCredential = await createUserWithEmailAndPassword(auth, regEmail.trim(), regPassword);
-        if (regName.trim()) {
-          try {
-            await updateProfile(userCredential.user, { displayName: regName.trim() });
-          } catch {
-            // non-fatal profile name update
+        if (authSuccess) {
+          setStatusMessage({
+            type: 'success',
+            text: `Cipher validated. Welcome to the Sanctuary, ${displayName}!`
+          });
+
+          setTimeout(() => {
+            if (onLoginSuccess) {
+              onLoginSuccess(selectedRole);
+            } else {
+              onNavigate('home');
+            }
+          }, 700);
+        }
+      } else {
+        // Register Tab
+        let regSuccess = false;
+        const regDisplayName = regName.trim() || email.split('@')[0];
+
+        if (isSupabaseConfigured) {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: regDisplayName,
+                role: selectedRole
+              }
+            }
+          });
+
+          if (error) {
+            throw error;
           }
+
+          if (data?.session) {
+            regSuccess = true;
+            setStatusMessage({
+              type: 'success',
+              text: 'Guild charter inscribed. Welcome to the fellowship!'
+            });
+          } else if (data?.user) {
+            setStatusMessage({
+              type: 'success',
+              text: 'Guild charter inscribed. Please check your email to confirm your account.'
+            });
+            setIsSubmitting(false);
+            return;
+          }
+        } else {
+          // Fallback to Firebase registration
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          if (regName.trim()) {
+            try {
+              await updateProfile(userCredential.user, { displayName: regName.trim() });
+            } catch {
+              // non-fatal
+            }
+          }
+          regSuccess = true;
+          setStatusMessage({
+            type: 'success',
+            text: 'Guild charter inscribed. Welcome to the fellowship!'
+          });
         }
 
-        setStatusMessage({
-          type: 'success',
-          text: 'Guild charter inscribed. Welcome to the fellowship!'
-        });
-
-        setTimeout(() => {
-          if (onLoginSuccess) {
-            onLoginSuccess(selectedRole);
-          } else {
-            onNavigate(selectedRole === 'author' ? 'author-fellowship' : 'reader-sanctuary');
-          }
-        }, 700);
+        if (regSuccess) {
+          setTimeout(() => {
+            if (onLoginSuccess) {
+              onLoginSuccess(selectedRole);
+            } else {
+              onNavigate('home');
+            }
+          }, 700);
+        }
       }
     } catch (err) {
-      let errorText = 'Authentication failed. Please verify your details.';
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        errorText = 'Invalid email or password. Please verify credentials or register.';
-      } else if (err.code === 'auth/email-already-in-use') {
+      let errorText = 'Authentication failed. Please verify your credentials.';
+      const msg = err.message || '';
+      if (
+        err.code === 'auth/invalid-credential' || 
+        err.code === 'auth/wrong-password' || 
+        err.code === 'auth/user-not-found' || 
+        msg.includes('Invalid login credentials')
+      ) {
+        errorText = 'Invalid email or password. Please verify credentials or switch to Register.';
+      } else if (err.code === 'auth/email-already-in-use' || msg.includes('already registered')) {
         errorText = 'This email is already inscribed. Please switch to Sign In.';
-      } else if (err.code === 'auth/weak-password') {
+      } else if (err.code === 'auth/weak-password' || msg.includes('weak') || msg.includes('at least 6 characters')) {
         errorText = 'Password cipher too weak. Please use at least 6 characters.';
-      } else if (err.code === 'auth/invalid-email') {
+      } else if (err.code === 'auth/invalid-email' || msg.includes('invalid email')) {
         errorText = 'Please enter a valid email address.';
-      } else if (err.code === 'auth/too-many-requests') {
+      } else if (err.code === 'auth/too-many-requests' || msg.includes('rate limit')) {
         errorText = 'Too many attempts. Access temporarily paused for security.';
-      } else if (err.message) {
-        errorText = err.message;
+      } else if (msg) {
+        errorText = msg;
       }
       setStatusMessage({ type: 'error', text: errorText });
     } finally {
@@ -103,6 +257,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
   const handleFederatedSeal = async (provider) => {
     const key = provider.toLowerCase();
     setStatusMessage(null);
+    const redirectUrl = getOAuthRedirectUrl();
 
     if (key.includes('google')) {
       setIsSubmitting(true);
@@ -112,30 +267,98 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
       });
 
       try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const name = result.user.displayName || result.user.email;
-        setStatusMessage({
-          type: 'success',
-          text: `Inscribed with Google: Welcome, ${name}!`
-        });
+        if (isSupabaseConfigured) {
+          sessionStorage.setItem('oauth_intended_role', selectedRole);
+          sessionStorage.setItem('oauth_destination', selectedRole === 'author' ? 'author-fellowship' : 'home');
 
-        setTimeout(() => {
-          if (onLoginSuccess) {
-            onLoginSuccess(selectedRole);
-          } else {
-            onNavigate(selectedRole === 'author' ? 'author-fellowship' : 'reader-sanctuary');
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: redirectUrl
+            }
+          });
+          if (error) {
+            console.error('Supabase Google OAuth error:', error);
+            throw error;
           }
-        }, 700);
+        } else {
+          // Fallback to Firebase popup when Supabase credentials are not in .env
+          const result = await signInWithPopup(auth, googleProvider);
+          const name = result.user.displayName || result.user.email;
+          setStatusMessage({
+            type: 'success',
+            text: `Inscribed with Google: Welcome, ${name}!`
+          });
+
+          setTimeout(() => {
+            if (onLoginSuccess) {
+              onLoginSuccess(selectedRole);
+            } else {
+              onNavigate('home');
+            }
+          }, 700);
+        }
       } catch (err) {
         if (err.code !== 'auth/popup-closed-by-user') {
           let errorMsg = err.message || 'Google authentication was not completed.';
           if (err.code === 'auth/unauthorized-domain') {
             errorMsg = 'This domain is not authorized for sign-in. Please check your domain authorization settings.';
           }
+          console.error('Google sign-in error:', err);
           setStatusMessage({ type: 'error', text: errorMsg });
         } else {
           setStatusMessage(null);
         }
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else if (key.includes('linkedin')) {
+      setIsSubmitting(true);
+      setStatusMessage({
+        type: 'success',
+        text: 'Opening LinkedIn Authentication Seal...'
+      });
+
+      try {
+        if (isSupabaseConfigured) {
+          sessionStorage.setItem('oauth_intended_role', selectedRole);
+          sessionStorage.setItem('oauth_destination', selectedRole === 'author' ? 'author-fellowship' : 'home');
+
+          let { error } = await supabase.auth.signInWithOAuth({
+            provider: 'linkedin_oidc',
+            options: {
+              redirectTo: redirectUrl
+            }
+          });
+
+          // Auto-fallback to legacy 'linkedin' provider if 'linkedin_oidc' is unrecognized
+          if (error && (error.message?.toLowerCase().includes('provider') || error.status === 400)) {
+            console.warn('Supabase linkedin_oidc notice, attempting legacy linkedin provider name...');
+            const retry = await supabase.auth.signInWithOAuth({
+              provider: 'linkedin',
+              options: {
+                redirectTo: redirectUrl
+              }
+            });
+            error = retry.error;
+          }
+
+          if (error) {
+            console.error('Supabase LinkedIn OAuth error:', error);
+            throw error;
+          }
+        } else {
+          setStatusMessage({
+            type: 'error',
+            text: 'LinkedIn sign-in requires Supabase OAuth configuration. Please add Supabase keys to your .env file.'
+          });
+        }
+      } catch (err) {
+        console.error('LinkedIn authentication error:', err);
+        setStatusMessage({
+          type: 'error',
+          text: err.message || 'LinkedIn authentication could not be completed.'
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -486,10 +709,36 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
             </p>
             <div className="login-direct-links">
               <span>Quick chamber entry without login:</span>
-              <button type="button" className="link-action-btn" onClick={() => onNavigate('reader-sanctuary')}>
+              <button 
+                type="button" 
+                className="link-action-btn" 
+                onClick={() => {
+                  if (!currentUser) {
+                    setStatusMessage({
+                      type: 'error',
+                      text: 'Authentication required. Please sign in or register to enter Reader Sanctuary.'
+                    });
+                    return;
+                  }
+                  onNavigate('reader-sanctuary');
+                }}
+              >
                 Open Reader Sanctuary →
               </button>
-              <button type="button" className="link-action-btn" onClick={() => onNavigate('author-fellowship')}>
+              <button 
+                type="button" 
+                className="link-action-btn" 
+                onClick={() => {
+                  if (!currentUser) {
+                    setStatusMessage({
+                      type: 'error',
+                      text: 'Authentication required. Please sign in or register to enter Author Studio.'
+                    });
+                    return;
+                  }
+                  onNavigate('author-fellowship');
+                }}
+              >
                 Open Author Studio →
               </button>
             </div>

@@ -123,7 +123,11 @@ export function ReaderSanctuaryPage({ onNavigate, theme, onToggleTheme }) {
           <button
             type="button"
             className="sanctuary-theme-toggle"
-            onClick={onToggleTheme}
+            data-theme-toggle="true"
+            onClick={(e) => {
+              e?.stopPropagation?.();
+              onToggleTheme?.(e);
+            }}
             aria-label="Toggle parchment theme"
           >
             {theme === 'dark' ? (

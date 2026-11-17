@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from './hooks/useTheme';
 import { useParallax } from './hooks/useParallax';
+import { useAuth } from './hooks/useAuth';
 
 import { Navbar } from './components/Navbar';
 import { DualBackdrop } from './components/DualBackdrop';
@@ -15,6 +16,8 @@ import { AuthorFellowshipPage } from './pages/AuthorFellowshipPage';
 
 function getInitialPage() {
   const hash = window.location.hash.toLowerCase();
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('dashboard') || hash.includes('dashboard')) return 'home';
   if (hash.includes('login')) return 'login';
   if (hash.includes('author')) return 'author-fellowship';
   if (hash.includes('reader')) return 'reader-sanctuary';
@@ -24,6 +27,7 @@ function getInitialPage() {
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const { activeChapter, scrollProgress } = useParallax();
+  const { isAuthenticated, loading } = useAuth();
   const [currentPage, setCurrentPage] = useState(getInitialPage);
 
   // Sync route with URL hash for browser back/forward and bookmarking
@@ -41,27 +45,106 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleLoginSuccess = (role) => {
-    if (role === 'author') {
-      handleNavigate('author-fellowship');
-    } else {
-      handleNavigate('reader-sanctuary');
-    }
+  const handleLoginSuccess = (_role) => {
+    // Redirect user back to the main home/dashboard view upon authentication
+    handleNavigate('home');
   };
 
+  // Determine effective page: protect restricted routes and /dashboard from unauthenticated access
+  const isDashboardRoute = window.location.pathname.toLowerCase().includes('/dashboard');
+  const isProtectedRoute = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary' || isDashboardRoute;
+  const effectivePage = (!loading && !isAuthenticated && isProtectedRoute) ? 'login' : currentPage;
+
+  // Sync URL hash if unauthenticated user navigated directly to a protected route
+  useEffect(() => {
+    if (!loading && !isAuthenticated && isProtectedRoute) {
+      if (window.location.hash !== '#login') {
+        window.location.hash = '#login';
+      }
+    }
+  }, [loading, isAuthenticated, isProtectedRoute]);
+
+  // Handle OAuth callback tokens, clean URL params, and smoothly navigate to post-login destination
+  useEffect(() => {
+    if (loading) return;
+
+    const path = window.location.pathname.toLowerCase();
+    const searchParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const hasOAuthParams = searchParams.has('code') || hash.includes('access_token=') || hash.includes('refresh_token=');
+    const isDashboardPath = path.includes('/dashboard');
+
+    if (isAuthenticated) {
+      if (hasOAuthParams || isDashboardPath) {
+        const dest = sessionStorage.getItem('oauth_destination') || 'home';
+        sessionStorage.removeItem('oauth_destination');
+        sessionStorage.removeItem('oauth_intended_role');
+
+        // Clean URL so callback query tokens and /dashboard path do not linger
+        window.history.replaceState(null, '', `${window.location.origin}/#${dest}`);
+        const timer = setTimeout(() => {
+          handleNavigate(dest);
+        }, 0);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isAuthenticated, loading]);
+
+  // Global Click-to-Sign-In Interception (Auth Gate)
+  // When unauthenticated, intercept clicks across the site and navigate to LoginPage,
+  // while explicitly exempting the Light/Dark Mode toggle so it executes freely for all guests.
+  useEffect(() => {
+    if (loading || isAuthenticated) {
+      return;
+    }
+
+    if (effectivePage === 'login') {
+      return;
+    }
+
+    const handleGlobalClickCapture = (e) => {
+      // Unrestricted Theme Toggle Exemption:
+      // Check if target or any ancestor is a theme toggle button
+      const isThemeToggle = Boolean(
+        e.target &&
+        typeof e.target.closest === 'function' &&
+        e.target.closest('#themeToggleBtn, .navbar-theme-btn, .author-theme-toggle, .sanctuary-theme-toggle, [data-theme-toggle="true"]')
+      );
+
+      if (isThemeToggle) {
+        // Allow theme toggle to execute freely with ZERO auth checks or redirects
+        return;
+      }
+
+      // Any other click across the website is intercepted
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation?.();
+      handleNavigate('login');
+    };
+
+    window.addEventListener('click', handleGlobalClickCapture, true);
+
+    return () => {
+      window.removeEventListener('click', handleGlobalClickCapture, true);
+    };
+  }, [loading, isAuthenticated, effectivePage]);
+
   // Standalone dedicated pages
-  if (currentPage === 'login') {
+  if (effectivePage === 'login') {
     return (
       <div className="login-route-canvas">
         <LoginPage
           onNavigate={handleNavigate}
           onLoginSuccess={handleLoginSuccess}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       </div>
     );
   }
 
-  if (currentPage === 'reader-sanctuary') {
+  if (effectivePage === 'reader-sanctuary') {
     return (
       <div className="reader-route-canvas">
         <ReaderSanctuaryPage
@@ -73,7 +156,7 @@ export default function App() {
     );
   }
 
-  if (currentPage === 'author-fellowship') {
+  if (effectivePage === 'author-fellowship') {
     return (
       <div className="author-route-canvas">
         <AuthorFellowshipPage
@@ -110,7 +193,7 @@ export default function App() {
         <Navbar
           theme={theme}
           onToggleTheme={toggleTheme}
-          currentPage={currentPage}
+          currentPage={effectivePage}
           onNavigate={handleNavigate}
         />
 
