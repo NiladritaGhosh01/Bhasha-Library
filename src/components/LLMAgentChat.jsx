@@ -7,12 +7,14 @@ export function LLMAgentChat({ openBook, onOpenCitation, onNavigate }) {
   const activeUser = user || currentUser;
   const isAuthed = Boolean(isAuthenticated || activeUser);
 
+  const selectedModel = AVAILABLE_MODELS[0];
+
   const [messages, setMessages] = useState([
     {
       id: 'welcome-1',
       sender: 'agent',
-      modelName: 'Gemini 3.8 Flash',
-      text: `Greetings, author. I am your literary research co-scribe powered by Google Gemini 3.8 Flash.
+      modelName: selectedModel.name,
+      text: `Greetings, author. I am your literary research co-scribe powered by Google Gemini.
 
 I have complete awareness of the **Bhasha Library manuscript archives**—including full texts, chapters, and thematic motifs across Tagore, Bibhutibhushan, Sarat Chandra, Bankim, and Jibanananda.
 
@@ -33,8 +35,6 @@ Ask me for assistance with your plot structure, sensory prose, dialect, or philo
   const [inputPrompt, setInputPrompt] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef(null);
-
-  const selectedModel = AVAILABLE_MODELS[0];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -159,7 +159,7 @@ Ask me for assistance with your plot structure, sensory prose, dialect, or philo
           <span className="model-label">
             <i className="fa-solid fa-sparkles"></i> Model:
           </span>
-          <span className="model-active-name">Gemini 3.8 Flash (Google AI)</span>
+          <span className="model-active-name">{selectedModel.name} (Google AI)</span>
           <span className="model-badge">{selectedModel.badge}</span>
         </div>
       </header>

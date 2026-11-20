@@ -230,6 +230,8 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 1.25rem;
   padding: 0 0.25rem;
 }
@@ -263,11 +265,14 @@
 .marquee-controls {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .marquee-control-btn {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-medium);
   background-color: var(--color-surface);

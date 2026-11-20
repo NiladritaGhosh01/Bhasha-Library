@@ -36,7 +36,7 @@ function getInitialOAuthError() {
   return null;
 }
 
-export function LoginPage({ onNavigate, onLoginSuccess }) {
+export function LoginPage({ onNavigate, onLoginSuccess, theme, onToggleTheme }) {
   const { currentUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('signin');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -382,14 +382,36 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
           type="button"
           className="btn-spring login-back-btn"
           onClick={() => onNavigate('home')}
+          title="Return to browse Sanctuary Home"
         >
           <i className="fa-solid fa-arrow-left"></i>
           <span>Return to Sanctuary Home</span>
         </button>
 
-        <div className="login-brand-pill" onClick={() => onNavigate('home')} role="button" tabIndex={0}>
-          <img src={ART_ASSETS.bhashaLogo} alt="Bhasha Library Logo" className="brand-logo-small" />
-          <span className="brand-name">Bhasha Library • ভাষা লাইব্রেরি</span>
+        <div className="login-top-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="login-brand-pill" onClick={() => onNavigate('home')} role="button" tabIndex={0}>
+            <img src={ART_ASSETS.bhashaLogo} alt="Bhasha Library Logo" className="brand-logo-small" />
+            <span className="brand-name">Bhasha Library</span>
+          </div>
+
+          <button
+            type="button"
+            id="themeToggleBtn"
+            data-theme-toggle="true"
+            onClick={(e) => {
+              e?.stopPropagation?.();
+              onToggleTheme?.(e);
+            }}
+            className="navbar-theme-btn"
+            aria-label="Toggle parchment day and nocturne night theme"
+            title={theme === 'dark' ? 'Switch to Sunlit Vellum Day' : 'Switch to Nocturne Night'}
+          >
+            {theme === 'dark' ? (
+              <i className="fa-solid fa-sun"></i>
+            ) : (
+              <i className="fa-solid fa-moon"></i>
+            )}
+          </button>
         </div>
       </header>
 
@@ -708,7 +730,7 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
               Manuscripts and translations protected by historical preservation covenants.
             </p>
             <div className="login-direct-links">
-              <span>Quick chamber entry without login:</span>
+              <span>Sanctuary chambers (unlocked after admission):</span>
               <button 
                 type="button" 
                 className="link-action-btn" 

@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ocr:server": "python backend/run_server.py",
+    "ocr:setup": "python backend/setup_tesseract.py"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

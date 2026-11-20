@@ -13,6 +13,7 @@ import {
   collection, 
   doc, 
   setDoc, 
+  deleteDoc,
   onSnapshot, 
   increment, 
   serverTimestamp 
@@ -367,7 +368,11 @@ function savePersistedClicks(clicksMap) {
 }
 
 // In-memory reactive state
-let inMemoryBooks = [...INITIAL_BOOKS];
+let inMemoryBooks = INITIAL_BOOKS.map(b => ({
+  ...b,
+  isOfficialCanonical: b.isOfficialCanonical ?? true,
+  uploadedByRole: b.uploadedByRole ?? 'admin'
+}));
 let inMemoryClicks = getPersistedClicks();
 const subscribers = new Set();
 let isFirestoreInitialized = false;
@@ -607,12 +612,8 @@ export const bookService = {
    * Conforms strictly to firestore.rules isValidManuscript schema
    */
   async addManuscript(manuscript) {
-    if (!auth?.currentUser) {
-      throw new Error('Authentication required: please log in to publish a manuscript.');
-    }
-
     const year = Number(manuscript.yearPublished);
-    const pages = Number(manuscript.pages);
+    const pages = Number(manuscript.pages || (manuscript.pagesData ? manuscript.pagesData.length : 1));
     if (!manuscript.name?.trim()) throw new Error('Manuscript title is required.');
     if (!manuscript.author?.trim()) throw new Error('Author name is required.');
     if (isNaN(year) || year < 1000 || year > 2100) throw new Error('Valid publication year (1000-2100) is required.');
@@ -630,12 +631,15 @@ export const bookService = {
       genre: (manuscript.genre || 'Classical Literature').trim().slice(0, 100),
       pages: pages,
       isbn: manuscript.isbn ? manuscript.isbn.trim().slice(0, 50) : `978-BHA-${Date.now().toString().slice(-6)}`,
-      clicks: 0,
+      clicks: manuscript.clicks || 0,
       storageUrl: manuscript.storageUrl ? manuscript.storageUrl.trim().slice(0, 500) : '',
       summary: (manuscript.summary || '').trim().slice(0, 5000),
       coverColor: manuscript.coverColor || '#3D1308',
       coverAccent: manuscript.coverAccent || '#E27D5B',
       coverMotif: manuscript.coverMotif || 'lotus',
+      isOfficialCanonical: Boolean(manuscript.isOfficialCanonical),
+      uploadedByRole: manuscript.uploadedByRole || 'author',
+      uploadedByEmail: (manuscript.uploadedByEmail || auth?.currentUser?.email || '').trim(),
       pagesData: Array.isArray(manuscript.pagesData) && manuscript.pagesData.length > 0 
         ? manuscript.pagesData 
         : [
@@ -668,6 +672,39 @@ export const bookService = {
     notifySubscribers();
 
     return newDoc;
+  },
+
+  /**
+   * Deletes a manuscript from the database and in-memory catalog
+   */
+  async deleteManuscript(id) {
+    if (!id) return false;
+    
+    if (isFirebaseConfigured && db) {
+      try {
+        const bookDocRef = doc(db, FIREBASE_COLLECTIONS.BOOKS, id);
+        await deleteDoc(bookDocRef);
+      } catch (err) {
+        console.warn(`[Firestore Delete] Cloud delete status: ${err.message}`);
+      }
+    }
+
+    inMemoryBooks = inMemoryBooks.filter(b => b.id !== id);
+    notifySubscribers();
+    return true;
+  },
+
+  /**
+   * Toggles the official canonical status of a manuscript
+   */
+  async toggleCanonicalStatus(id) {
+    const book = inMemoryBooks.find(b => b.id === id);
+    if (!book) return null;
+    const newStatus = !book.isOfficialCanonical;
+    return this.addManuscript({
+      ...book,
+      isOfficialCanonical: newStatus
+    });
   },
 
   /**

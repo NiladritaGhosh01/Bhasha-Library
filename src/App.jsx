@@ -13,11 +13,13 @@ import { Footer } from './components/Footer';
 import { LoginPage } from './pages/LoginPage';
 import { ReaderSanctuaryPage } from './pages/ReaderSanctuaryPage';
 import { AuthorFellowshipPage } from './pages/AuthorFellowshipPage';
+import { AdminPortalPage } from './pages/AdminPortalPage';
 
 function getInitialPage() {
   const hash = window.location.hash.toLowerCase();
   const path = window.location.pathname.toLowerCase();
   if (path.includes('dashboard') || hash.includes('dashboard')) return 'home';
+  if (hash.includes('admin') || path.includes('/admin')) return 'admin-portal';
   if (hash.includes('login')) return 'login';
   if (hash.includes('author')) return 'author-fellowship';
   if (hash.includes('reader')) return 'reader-sanctuary';
@@ -50,19 +52,19 @@ export default function App() {
     handleNavigate('home');
   };
 
-  // Determine effective page: protect restricted routes and /dashboard from unauthenticated access
-  const isDashboardRoute = window.location.pathname.toLowerCase().includes('/dashboard');
-  const isProtectedRoute = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary' || isDashboardRoute;
-  const effectivePage = (!loading && !isAuthenticated && isProtectedRoute) ? 'login' : currentPage;
+  // Route protection: anyone can freely visit the homepage without login,
+  // but protected chambers (Author Fellowship & Reader Sanctuary) require authentication.
+  const isProtectedPage = currentPage === 'author-fellowship' || currentPage === 'reader-sanctuary';
+  const effectivePage = (!loading && !isAuthenticated && isProtectedPage) ? 'login' : currentPage;
 
-  // Sync URL hash if unauthenticated user navigated directly to a protected route
+  // Sync URL hash if unauthenticated visitor tries to access a protected chamber directly
   useEffect(() => {
-    if (!loading && !isAuthenticated && isProtectedRoute) {
+    if (!loading && !isAuthenticated && isProtectedPage) {
       if (window.location.hash !== '#login') {
         window.location.hash = '#login';
       }
     }
-  }, [loading, isAuthenticated, isProtectedRoute]);
+  }, [loading, isAuthenticated, isProtectedPage]);
 
   // Handle OAuth callback tokens, clean URL params, and smoothly navigate to post-login destination
   useEffect(() => {
@@ -98,29 +100,47 @@ export default function App() {
       return;
     }
 
-    if (effectivePage === 'login') {
+    if (effectivePage === 'login' || effectivePage === 'admin-portal') {
       return;
     }
 
     const handleGlobalClickCapture = (e) => {
-      // Unrestricted Theme Toggle Exemption:
+      // 1. Unrestricted Theme Toggle Exemption:
       // Check if target or any ancestor is a theme toggle button
       const isThemeToggle = Boolean(
         e.target &&
         typeof e.target.closest === 'function' &&
         e.target.closest('#themeToggleBtn, .navbar-theme-btn, .author-theme-toggle, .sanctuary-theme-toggle, [data-theme-toggle="true"]')
       );
-
       if (isThemeToggle) {
         // Allow theme toggle to execute freely with ZERO auth checks or redirects
         return;
       }
 
-      // Any other click across the website is intercepted
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation?.();
-      handleNavigate('login');
+      // 2. Passive scroll links exemption (ascend to top, chapter jump anchors)
+      const isScrollAnchor = Boolean(
+        e.target &&
+        typeof e.target.closest === 'function' &&
+        e.target.closest('.footer-ascend-link, a[href^="#stage-"]')
+      );
+      if (isScrollAnchor) {
+        return;
+      }
+
+      // 3. Functional interactivity gate:
+      // Clicking any functional tool, navigation item, book card, button, or link requires login
+      const isInteractiveFunctional = Boolean(
+        e.target &&
+        typeof e.target.closest === 'function' &&
+        e.target.closest('button, a, .fellowship-tool-card, .marquee-item, .catalogue-card, .nav-link-btn, .mobile-nav-link-btn, .footer-link-btn, .wax-seal-btn, [role="button"]')
+      );
+
+      if (isInteractiveFunctional) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation?.();
+        handleNavigate('login');
+      }
     };
 
     window.addEventListener('click', handleGlobalClickCapture, true);
@@ -131,6 +151,18 @@ export default function App() {
   }, [loading, isAuthenticated, effectivePage]);
 
   // Standalone dedicated pages
+  if (effectivePage === 'admin-portal') {
+    return (
+      <div className="admin-route-canvas">
+        <AdminPortalPage
+          onNavigate={handleNavigate}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+      </div>
+    );
+  }
+
   if (effectivePage === 'login') {
     return (
       <div className="login-route-canvas">

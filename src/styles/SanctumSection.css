@@ -297,14 +297,16 @@
 .wax-seals-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
 .wax-seal-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
+  padding: 0.5rem 1rem;
   min-height: 44px;
   background-color: var(--color-surface);
   border: 1px solid var(--border-medium);
@@ -313,6 +315,9 @@
   font-family: var(--font-body);
   font-size: 0.8125rem;
   font-weight: 500;
+  cursor: pointer;
+  flex: 1 1 auto;
+  min-width: 90px;
 }
 
 .wax-seal-btn:hover {
