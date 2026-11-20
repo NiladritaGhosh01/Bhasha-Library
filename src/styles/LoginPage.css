@@ -269,3 +269,49 @@
 .link-action-btn:hover {
   text-decoration: underline;
 }
+
+/* ==========================================================================
+   Mobile Responsive Rules for Login Chamber (< 480px)
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .login-page-wrapper {
+    padding: 0.75rem 0.75rem 2rem;
+  }
+
+  .login-card-container {
+    padding: 1.5rem 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .login-card-title {
+    font-size: 1.5rem;
+  }
+
+  .login-card-subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .login-tab-btn {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+  }
+
+  .form-input {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    padding: 0.625rem 0.75rem;
+  }
+
+  .role-options-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .login-top-bar {
+    margin-bottom: 1.25rem;
+  }
+
+  .login-brand-pill .brand-name {
+    font-size: 0.8125rem;
+  }
+}

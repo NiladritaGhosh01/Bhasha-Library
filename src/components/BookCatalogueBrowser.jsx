@@ -14,6 +14,7 @@ export function BookCatalogueBrowser({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDecade, setSelectedDecade] = useState('All');
   const [selectedGenre, setSelectedGenre] = useState('All');
+  const [selectedCollection, setSelectedCollection] = useState('all'); // 'all' | 'admin' | 'community'
   const [sortBy, setSortBy] = useState('popular');
   const [seedStatus, setSeedStatus] = useState('');
 
@@ -58,6 +59,12 @@ export function BookCatalogueBrowser({
       list = list.filter(b => b.genre && b.genre.toLowerCase().includes(selectedGenre.toLowerCase()));
     }
 
+    if (selectedCollection === 'admin') {
+      list = list.filter(b => b.isOfficialCanonical);
+    } else if (selectedCollection === 'community') {
+      list = list.filter(b => !b.isOfficialCanonical);
+    }
+
     // Sort order
     if (sortBy === 'popular') {
       list.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
@@ -72,7 +79,7 @@ export function BookCatalogueBrowser({
     }
 
     return list;
-  }, [allBooks, searchQuery, selectedDecade, selectedGenre, sortBy]);
+  }, [allBooks, searchQuery, selectedDecade, selectedGenre, selectedCollection, sortBy]);
 
   const popularCount = filteredBooks.length;
 
@@ -88,6 +95,7 @@ export function BookCatalogueBrowser({
     setSearchQuery('');
     setSelectedDecade('All');
     setSelectedGenre('All');
+    setSelectedCollection('all');
     setSortBy('popular');
   };
 
@@ -137,15 +145,27 @@ export function BookCatalogueBrowser({
           )}
 
           {onOpenAddModal && (
-            <button
-              type="button"
-              className="btn-spring add-manuscript-btn"
-              onClick={onOpenAddModal}
-              title="Publish a new manuscript to the archive"
-            >
-              <i className="fa-solid fa-plus"></i>
-              <span>Add Manuscript</span>
-            </button>
+            <div className="catalogue-upload-buttons-wrap">
+              <button
+                type="button"
+                className="btn-spring add-manuscript-btn user-upload-btn"
+                onClick={() => onOpenAddModal('user')}
+                title="Upload book PDF or text with Bengali & English OCR"
+              >
+                <i className="fa-solid fa-file-arrow-up"></i>
+                <span>Upload Book (OCR)</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-spring add-manuscript-btn admin-upload-btn"
+                onClick={() => onOpenAddModal('admin')}
+                title="Admin: Inscribe reference books for visitor exploration"
+              >
+                <i className="fa-solid fa-certificate"></i>
+                <span>Admin Inscription</span>
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -218,6 +238,21 @@ export function BookCatalogueBrowser({
             </select>
           </div>
 
+          {/* Collection Filter Dropdown */}
+          <div className="ribbon-filter-group">
+            <label htmlFor="collectionSelect">Folio Vault:</label>
+            <select
+              id="collectionSelect"
+              className="ribbon-select"
+              value={selectedCollection}
+              onChange={(e) => setSelectedCollection(e.target.value)}
+            >
+              <option value="all">All Folios</option>
+              <option value="admin">★ Admin Reference (Visitor Guide)</option>
+              <option value="community">✒ Community Manuscripts</option>
+            </select>
+          </div>
+
           {/* Sort By Dropdown */}
           <div className="ribbon-filter-group">
             <label htmlFor="sortSelect">Sort By:</label>
@@ -236,7 +271,7 @@ export function BookCatalogueBrowser({
           </div>
 
           {/* Active Filter Clear */}
-          {(searchQuery || selectedDecade !== 'All' || selectedGenre !== 'All' || sortBy !== 'popular') && (
+          {(searchQuery || selectedDecade !== 'All' || selectedGenre !== 'All' || selectedCollection !== 'all' || sortBy !== 'popular') && (
             <button
               type="button"
               className="ribbon-reset-btn"
@@ -294,6 +329,15 @@ export function BookCatalogueBrowser({
                 <div className="card-meta-top">
                   <span className="card-genre">{book.genre}</span>
                   <span className="card-decade">{book.decade}</span>
+                  {book.isOfficialCanonical ? (
+                    <span className="card-admin-badge" title="Curated Reference Book for Visitors">
+                      <i className="fa-solid fa-certificate"></i> Admin Reference
+                    </span>
+                  ) : (
+                    <span className="card-community-badge" title="Community Contributed Manuscript">
+                      <i className="fa-solid fa-feather"></i> Community
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="card-title">{book.name}</h3>

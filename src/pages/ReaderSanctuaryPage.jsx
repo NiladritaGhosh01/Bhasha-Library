@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BookCatalogueBrowser } from '../components/BookCatalogueBrowser';
 import { BookReader } from '../components/BookReader';
+import { AddManuscriptModal } from '../components/AddManuscriptModal';
 
 export function ReaderSanctuaryPage({ onNavigate, theme, onToggleTheme }) {
   // Tabs state: array of { id, title, book, initialPage }
@@ -13,6 +14,8 @@ export function ReaderSanctuaryPage({ onNavigate, theme, onToggleTheme }) {
     }
   ]);
   const [activeTabId, setActiveTabId] = useState('tab-1');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalMode, setAddModalMode] = useState('user'); // 'admin' | 'user'
 
   const activeTab = tabs.find(t => t.id === activeTabId) || tabs[0];
 
@@ -190,9 +193,23 @@ export function ReaderSanctuaryPage({ onNavigate, theme, onToggleTheme }) {
             title="Reader Sanctuary • Manuscript Directory"
             subtitle="Search, filter, and open literary folios into multiple concurrent reading tabs"
             onSelectBook={(book) => handleSelectBookInTab(book, 1)}
+            onOpenAddModal={(mode = 'user') => {
+              setAddModalMode(mode);
+              setIsAddModalOpen(true);
+            }}
           />
         )}
       </main>
+
+      {/* Add Manuscript Modal with OCR */}
+      <AddManuscriptModal
+        isOpen={isAddModalOpen}
+        initialMode={addModalMode}
+        onClose={() => setIsAddModalOpen(false)}
+        onManuscriptAdded={(newBook) => {
+          handleSelectBookInTab(newBook, 1);
+        }}
+      />
     </div>
   );
 }

@@ -18,6 +18,8 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
   ]);
   const [activeTabId, setActiveTabId] = useState('author-tab-1');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalMode, setAddModalMode] = useState('user'); // 'admin' | 'user'
+  const [mobilePane, setMobilePane] = useState('reading'); // 'reading' | 'agent'
 
   // Split-pane divider position (percentage for left pane)
   const [splitPercent, setSplitPercent] = useState(54);
@@ -145,11 +147,13 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
       // Load in active tab
       handleSelectBookInTab(book, pageNumber);
     }
+    setMobilePane('reading');
   };
 
   const handleManuscriptAdded = (newManuscript) => {
     // Automatically switch active tab to view the newly inscribed folio
     handleSelectBookInTab(newManuscript, 1);
+    setMobilePane('reading');
   };
 
   return (
@@ -244,8 +248,32 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
         </div>
       </header>
 
+      {/* Mobile Workspace Segmented Control (< 768px) */}
+      <div className="author-mobile-pane-switcher" role="tablist" aria-label="Author Workspace Views">
+        <button
+          type="button"
+          className={`mobile-pane-btn ${mobilePane === 'reading' ? 'active' : ''}`}
+          onClick={() => setMobilePane('reading')}
+          role="tab"
+          aria-selected={mobilePane === 'reading'}
+        >
+          <i className="fa-solid fa-book-open"></i>
+          <span>Manuscript Folio</span>
+        </button>
+        <button
+          type="button"
+          className={`mobile-pane-btn ${mobilePane === 'agent' ? 'active' : ''}`}
+          onClick={() => setMobilePane('agent')}
+          role="tab"
+          aria-selected={mobilePane === 'agent'}
+        >
+          <i className="fa-solid fa-feather-pointed"></i>
+          <span>AI Co-Scribe</span>
+        </button>
+      </div>
+
       {/* Main Split-Pane Workspace */}
-      <div className="author-split-workspace" ref={containerRef}>
+      <div className={`author-split-workspace mobile-active-pane-${mobilePane}`} ref={containerRef}>
         {/* Left Section: Tabbed Book Reading Section */}
         <section
           className="author-reading-pane"
@@ -302,7 +330,10 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
                 title="Author Research Vault"
                 subtitle="Select any manuscript to read side-by-side with your LLM research scribe"
                 onSelectBook={(book) => handleSelectBookInTab(book, 1)}
-                onOpenAddModal={() => setIsAddModalOpen(true)}
+                onOpenAddModal={(mode = 'user') => {
+                  setAddModalMode(mode);
+                  setIsAddModalOpen(true);
+                }}
               />
             )}
           </div>
@@ -345,6 +376,7 @@ export function AuthorFellowshipPage({ onNavigate, theme, onToggleTheme }) {
       {/* Add Manuscript Modal */}
       <AddManuscriptModal
         isOpen={isAddModalOpen}
+        initialMode={addModalMode}
         onClose={() => setIsAddModalOpen(false)}
         onManuscriptAdded={handleManuscriptAdded}
       />
