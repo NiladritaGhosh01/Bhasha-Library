@@ -333,6 +333,7 @@ function extractCitations(text) {
     const author = dbEntry ? dbEntry.author : (catalogEntry ? catalogEntry.author : '');
     const genre = dbEntry ? dbEntry.genre : (catalogEntry ? catalogEntry.genre : '');
     const filePath = dbEntry ? dbEntry.filePath : '';
+    const fileName = dbEntry ? (dbEntry.fileName || `${dbEntry.title}.pdf`) : '';
 
     if (!citations.some(c => c.bookId === bookId)) {
       citations.push({
@@ -341,6 +342,7 @@ function extractCitations(text) {
         author,
         genre,
         filePath,
+        fileName,
         pageNumber,
         quote
       });

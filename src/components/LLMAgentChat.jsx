@@ -519,16 +519,29 @@ Share your story premise, dialogue drafts, or scene dilemmas. You can also attac
                                 <span>Open in Reader Chamber (Folio {c.pageNumber})</span>
                               </button>
                               {c.filePath && (
-                                <a
-                                  href={c.filePath}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn-spring citation-open-btn citation-pdf-btn"
-                                  style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                                >
-                                  <i className="fa-solid fa-file-pdf"></i>
-                                  <span>Read Original PDF</span>
-                                </a>
+                                <>
+                                  <a
+                                    href={c.filePath}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-spring citation-open-btn citation-pdf-btn"
+                                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                                    title="View PDF directly in browser"
+                                  >
+                                    <i className="fa-solid fa-file-pdf"></i>
+                                    <span>Read Original PDF</span>
+                                  </a>
+                                  <a
+                                    href={c.filePath}
+                                    download={c.fileName || `${c.bookName}.pdf`}
+                                    className="btn-spring citation-open-btn"
+                                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(212, 175, 55, 0.15)', color: '#D4AF37' }}
+                                    title="Download PDF to your device"
+                                  >
+                                    <i className="fa-solid fa-download"></i>
+                                    <span>Download PDF</span>
+                                  </a>
+                                </>
                               )}
                             </div>
                           </div>
