@@ -482,8 +482,24 @@ export const bookService = {
    * Retrieves a single book by ID
    */
   getBookById(id) {
+    if (!id) return null;
     const books = this.getAllBooks();
-    return books.find(b => b.id === id) || null;
+    const direct = books.find(b => b.id === id);
+    if (direct) return direct;
+
+    const aliases = {
+      'anandamath': 'anandamath-1882',
+      'chander-pahar-mountain-of-the-moon': 'chander-pahar-1937',
+      'দেবদাস-devdas': 'devdas-1917',
+      'devdas': 'devdas-1917',
+      'kopalkundola': 'kapalkundala-1866',
+      'কপালকুণ্ডলা-kopalkundola': 'kapalkundala-1866',
+      'kapalkundala': 'kapalkundala-1866'
+    };
+    if (aliases[id]) {
+      return books.find(b => b.id === aliases[id]) || null;
+    }
+    return books.find(b => b.id.toLowerCase() === id.toLowerCase() || (b.name && b.name.toLowerCase().includes(id.toLowerCase()))) || null;
   },
 
   /**

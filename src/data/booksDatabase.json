@@ -1,0 +1,50 @@
+[
+  {
+    "id": "anandamath",
+    "title": "Anandamath (আনন্দমঠ)",
+    "author": "Bankim Chandra Chattopadhyay (বঙ্কিমচন্দ্র চট্টোপাধ্যায়)",
+    "genre": "Historical",
+    "filePath": "/books/Historical/ANANDAMATH.pdf",
+    "localFilePath": "public/books/Historical/ANANDAMATH.pdf",
+    "fileName": "ANANDAMATH.pdf",
+    "summaryKeywords": "Set against the backdrop of the Sannyasi Rebellion in late 18th-century Bengal and the devastating famine of 1770, the novel explores themes of patriotic sacrifice, spiritual brotherhood (Santans), and the hymn Vande Mataram.",
+    "pageCount": 104,
+    "sourcePath": "C:\\Users\\basus\\Downloads\\BOOK DATABASE\\ANANDAMATH.pdf"
+  },
+  {
+    "id": "chander-pahar-mountain-of-the-moon",
+    "title": "Chander Pahar (চাঁদের পাহাড় - Mountain of the Moon)",
+    "author": "Bibhutibhushan Bandyopadhyay (বিভূতিভূষণ বন্দ্যোপাধ্যায়)",
+    "genre": "Adventure",
+    "filePath": "/books/Adventure/Chander%20Pahar%20by%20Bibhutibhushan%20Benarjee.pdf",
+    "localFilePath": "public/books/Adventure/Chander Pahar by Bibhutibhushan Benarjee.pdf",
+    "fileName": "Chander Pahar by Bibhutibhushan Benarjee.pdf",
+    "summaryKeywords": "A gripping tale of exploration and survival where young Shankar leaves Bengal for the African wilderness to seek the mythical diamond mines of Richtersveld, confronting dangerous wildlife, harsh terrain, and the untamed unknown.",
+    "pageCount": 99,
+    "sourcePath": "C:\\Users\\basus\\Downloads\\BOOK DATABASE\\Chander Pahar by Bibhutibhushan Benarjee.pdf.pdf"
+  },
+  {
+    "id": "দেবদাস-devdas",
+    "title": "দেবদাস (Devdas)",
+    "author": "শরৎচন্দ্র চট্টোপাধ্যায় (Sarat Chandra Chattopadhyay)",
+    "genre": "Romance",
+    "filePath": "/books/Romance/%E0%A6%A6%E0%A7%87%E0%A6%AC%E0%A6%A6%E0%A6%BE%E0%A6%B8.pdf",
+    "localFilePath": "public/books/Romance/দেবদাস.pdf",
+    "fileName": "দেবদাস.pdf",
+    "summaryKeywords": "A poignant tragic romance of unrequited love, wounded pride, and societal barriers between childhood sweethearts Devdas and Paro, portraying deep emotional turmoil and sacrificial devotion.",
+    "pageCount": 120,
+    "sourcePath": "C:\\Users\\basus\\Downloads\\BOOK DATABASE\\দেবদাস.pdf"
+  },
+  {
+    "id": "kopalkundola",
+    "title": "কপালকুণ্ডলা (Kapalkundala)",
+    "author": "বঙ্কিমচন্দ্র চট্টোপাধ্যায় (Bankim Chandra Chattopadhyay)",
+    "genre": "Gothic Romance",
+    "filePath": "/books/Romance/Kopalkundola.pdf",
+    "localFilePath": "public/books/Romance/Kopalkundola.pdf",
+    "fileName": "Kopalkundola.pdf",
+    "summaryKeywords": "A haunting romantic mystery set along the wild coastal sands of Hijli, where stranded traveler Nabakumar is saved from a tantric Kapalika sacrifice by the ethereal forest maiden Kapalkundala, delving into destiny, wilderness, and societal clashes.",
+    "pageCount": 160,
+    "sourcePath": "C:\\Users\\basus\\Downloads\\BOOK DATABASE\\Kopalkundola.pdf"
+  }
+]

@@ -145,10 +145,34 @@ export function LoginPage({ onNavigate, onLoginSuccess, theme, onToggleTheme }) 
             }
           }
         } else {
-          // Fallback to Firebase authentication
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          authSuccess = true;
-          displayName = userCredential.user.displayName || userCredential.user.email || displayName;
+          // Fallback to Firebase authentication with smart auto-inscribe
+          try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            authSuccess = true;
+            displayName = userCredential.user.displayName || userCredential.user.email || displayName;
+          } catch (signInErr) {
+            if (
+              signInErr.code === 'auth/user-not-found' || 
+              signInErr.code === 'auth/invalid-credential'
+            ) {
+              try {
+                const newUserCred = await createUserWithEmailAndPassword(auth, email, password);
+                authSuccess = true;
+                displayName = newUserCred.user.displayName || newUserCred.user.email || displayName;
+                setStatusMessage({
+                  type: 'success',
+                  text: `New chamber inscribed! Welcome to Bhasha Library, ${displayName}!`
+                });
+              } catch (createErr) {
+                if (createErr.code === 'auth/email-already-in-use') {
+                  throw signInErr;
+                }
+                throw createErr;
+              }
+            } else {
+              throw signInErr;
+            }
+          }
         }
 
         if (authSuccess) {
